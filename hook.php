@@ -4,7 +4,7 @@
  glpi2mdt plugin for GLPI
  Copyright (C) 2017 by the glpi2mdt Development Team.
 
- https://github.com/DebugBill/glpi2mdt
+ https://github.com/RandomFrenchAdmin/glpi2mdt
  -------------------------------------------------------------------------
 
  LICENSE
@@ -286,18 +286,29 @@ function plugin_glpi2mdt_install() {
 function plugin_glpi2mdt_uninstall() {
    global $DB;
 
-   // Delete tables (this will erase configuration data)
-   $result = $DB->query("SHOW TABLES LIKE 'glpi_plugin_glpi2mdt_%';");
-   while ($row = $DB->fetch_row($result)) {
-      $DB->query("DROP TABLE $row[0]") or die("error deleting table $row[0] ".$DB->error());
+   // Plugin tables deletion
+   $tables = ["glpi_plugin_glpi2mdt_application_group_links",
+                   "glpi_plugin_glpi2mdt_application_groups",
+                   "glpi_plugin_glpi2mdt_applications",
+                   "glpi_plugin_glpi2mdt_descriptions",
+                   "glpi_plugin_glpi2mdt_models",
+				   "glpi_plugin_glpi2mdt_operating_systems",
+				   "glpi_plugin_glpi2mdt_parameters",
+				   "glpi_plugin_glpi2mdt_roles",
+				   "glpi_plugin_glpi2mdt_settings",
+				   "glpi_plugin_glpi2mdt_task_sequence_group_links",
+				   "glpi_plugin_glpi2mdt_task_sequence_groups",
+                   "glpi_plugin_glpi2mdt_task_sequences"];
+				   
+   foreach ($tables as $table) {
+      $DB->query("DROP TABLE IF EXISTS `$table`;");
    }
-
+   
    // Remove cron tasks
-   Crontask::Unregister('Glpi2mdtCrontask');
+   CronTask::Unregister('Glpi2mdtCrontask');
 
    return true;
 }
-
 
 /**
 * This function is called by GLPI when an update is made to a computer
