@@ -1,0 +1,5 @@
+USE [MDT]
+GO
+ALTER TABLE dbo.Settings
+ADD "OSValue" VARCHAR(38) NULL;
+GO
