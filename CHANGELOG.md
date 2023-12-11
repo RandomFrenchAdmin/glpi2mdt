@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## Changed
 - Fix application group names (replace "\" caracter from XML source file)
+- Fix broken uninstall function
 - Display "Applications dialog" selectbox
 - Use InnoDB instead of MyISAM
 
