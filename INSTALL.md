@@ -1,7 +1,7 @@
 # Installation and configuration
 
 
-## Initial setup
+## Initial setup (plugin)
 * Install the plugin like any other. 
 * Go to menu Configuration/Plugin. Click on **install** then **activate**. This will create additional tables within your GLPI database.
 * Mount your deployement share locally on the GLPI server (read-only is OK, only the "Control" directory is necessary. Pay attention to SE-Linux restirctions. PHP may not be able to read the files without proper configuration)
@@ -12,6 +12,11 @@
 * Click on "Initialize data". Configuration data from MDT's database and XML files on the share will be uploaded. When task sequences or applications are modified on MDT, the data needs to be refresehd again. A cron task will fix that later.
 
 That's all for now!
+
+## Initial setup (MDT part)
+* Copy all scripts from "Extras/Scripts" folder to the "Scripts" folder on your MDT deployment share.
+* Adapt and execute all SQL queries from "Extras/SQL Queries" folder into your SQL Server. These scripts add a custom value used by the plugin into MDT's database.
+* Add "OSValue" property into your [Settings] section in "CustomSettings.ini" file from MDT's "Control" folder.
 
 ## Daily usage
 
