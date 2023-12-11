@@ -31,7 +31,7 @@ It is developed and tested in this environment only. If you experience problem w
 * MDT must be fully operational by itself. The plugin will not fix a faulty MDT installation, it is only remote-controlling it.
 * SQLSRV and SimpleXML PHP modules must be installed
 * The "Control" directory in your MDT deployment share contains part of the MDT configuration (the other part is in the MS-SQL database). It needs to be mounted (read-only is OK) somewhere on your GLPI server and accessible to PHP scripts. Pay specific attention to files ownership and SELinux settings which can prevent proper functioning.
-* Many modifications are needed to make the operating system choice possible.
+* Many modifications are needed to make the operating system choice possible. (See INSTALL.md file !)
 
 Starting with version 0.1.0 this plugin is now fully functional and in use at our premises. I hope to improve it with time but some feedback on this
 version is welcome in order to direct my efforts in the right direction.
