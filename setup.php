@@ -4,7 +4,7 @@
  glpi2mdt plugin for GLPI
  Copyright (C) 2017 by Blaise Thauvin
 
- https://github.com/DebugBill/glpi2mdt
+ https://github.com/RandomFrenchAdmin/glpi2mdt
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,7 +26,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_GLPI2MDT_VERSION', '0.4.0');
+define('PLUGIN_GLPI2MDT_VERSION', '0.3.1');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_GLPI2MDT_MIN_GLPI", "9.5");
@@ -80,7 +80,7 @@ function plugin_version_glpi2mdt() {
 		'shortname'      => 'glpi2mdt',
 		'version'        => PLUGIN_GLPI2MDT_VERSION,
 		'author'         => 'Blaise Thauvin, Enzo Lefrançois',
-		'homepage'       => 'https://github.com/DebugBill/glpi2mdt',
+		'homepage'       => 'https://github.com/RandomFrenchAdmin/glpi2mdt',
 		'license'        => 'GPLv3+',
 		'requirements'   => [
 			'glpi' => [
