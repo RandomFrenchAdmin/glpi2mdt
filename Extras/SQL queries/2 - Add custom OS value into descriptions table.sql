@@ -7,7 +7,7 @@ INSERT INTO [dbo].[Descriptions]
            ,[Category]
            ,[Description])
      VALUES
-           ('OSValue','8', 'Miscellaneous','Operating system name')
+           ('OSValue','8', 'Miscellaneous','Operating system GUID')
 GO
 
 
