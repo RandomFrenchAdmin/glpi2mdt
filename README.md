@@ -1,6 +1,5 @@
 # glpi2mdt
 
-
 ## Introduction
 This goal of this plugin is to interface GLPI with MDT, the Microsoft Deployment Toolkit in a way quite similar to what SSCM can do.
 
@@ -31,8 +30,8 @@ It is developed and tested in this environment only. If you experience problem w
 * MDT must be installed in a MS-SQL database accessible from the GLPI server
 * MDT must be fully operational by itself. The plugin will not fix a faulty MDT installation, it is only remote-controlling it.
 * SQLSRV and SimpleXML PHP modules must be installed
-* The "Control" directory in your MDT deployment share contains part of the MDT configuration (the other part is in the MS-SQL database). It needs to be mounted (read-only is OK) somewhere on your GLPI server and accessible to PHP scripts. Pay specific attention to files ownership and SELinux settings which can prevent proper functioning. 
-* FusionInventory, though not mandatory is really very very nice to have.
+* The "Control" directory in your MDT deployment share contains part of the MDT configuration (the other part is in the MS-SQL database). It needs to be mounted (read-only is OK) somewhere on your GLPI server and accessible to PHP scripts. Pay specific attention to files ownership and SELinux settings which can prevent proper functioning.
+* Many modifications are needed to make the operating system choice possible.
 
 Starting with version 0.1.0 this plugin is now fully functional and in use at our premises. I hope to improve it with time but some feedback on this
 version is welcome in order to direct my efforts in the right direction.
@@ -47,11 +46,7 @@ The plugin is available in French and English, other translators welcome.
 * Automate some actions based on information available in GLPI and not managed by MDT (location, entity....)
 * Be multi-MDT-server, multi-deployment-share, multi-domain aware. Currently the plugin is not domain aware and is connected to only one MDT database. This raises quite a few questions as to how it should work then.
 * Several coupling modes are proposed in the config page.... from the ligthest to the tighter link between MDT and GLPI. 
-* Fix Bugs!!!!! There most probably are many, this is the first release.
+* Fix Bugs!!!!!
 
 
 Please test and send feedback if you (dis)like my work.
-
-For more information, please consult the Wiki on gitHub
-
-
