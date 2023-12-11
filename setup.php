@@ -26,7 +26,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_GLPI2MDT_VERSION', '0.3.0');
+define('PLUGIN_GLPI2MDT_VERSION', '0.3.1');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_GLPI2MDT_MIN_GLPI", "9.5");
@@ -79,7 +79,7 @@ function plugin_version_glpi2mdt() {
 		'name'           => 'GLPI 2 MDT',
 		'shortname'      => 'glpi2mdt',
 		'version'        => PLUGIN_GLPI2MDT_VERSION,
-		'author'         => 'Blaise Thauvin',
+		'author'         => 'Blaise Thauvin, Enzo Lefrançois',
 		'homepage'       => 'https://github.com/DebugBill/glpi2mdt',
 		'license'        => 'GPLv3+',
 		'requirements'   => [

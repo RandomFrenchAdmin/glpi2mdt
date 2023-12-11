@@ -1,5 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [0.3.1] - 2023-12-05
+## Added
+- Add possibility to choose OS (Several modifications are needed on the MDT database before)
+
+## Changed
+- Fix application group names (replace "\" caracter from XML source file)
+
+## Removed
+- None
+
+
+## [0.2.1] - 2017-12-20
+### Added
+ - Russian language now available thanks to Nikolaï (AircraftRu)
+
+## Changed
+ - None
+
+## Removed
+ - None
+ 
 ## [0.3.0] - 2022-02-13
 ## Added
 - None

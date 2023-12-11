@@ -4,6 +4,7 @@
 
 
 - Blaise Thauvin (glpi2mdt at thauvin.org)
+- Enzo Lefrançois (Contributor)
 
 
 **********************************************************************

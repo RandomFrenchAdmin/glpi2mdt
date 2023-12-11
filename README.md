@@ -20,11 +20,10 @@ The plugin will therefore get its full potential when used in conjunction with "
 
 ## Restrictions
 This plugin works fine on my specific configuration 
-* MDT 2013 on Windows Server 2016
-* MS-SQL Server 2012
-* GLPI 9.5.5 on Windows Server 2012 R2
-* WampServer 3.2.5 
-* PHP 7.3.27 
+* MDT on Windows Server 2022
+* MS-SQL Server 2022
+* GLPI 10.0.7 on Debian 11
+* PHP 8.2
 It is developed and tested in this environment only. If you experience problem with a different configuration please report the issue on GitHub. I'll do my best to make it compatible with other setups as long as I am aware of the issue.
 
 ## Prerequisites

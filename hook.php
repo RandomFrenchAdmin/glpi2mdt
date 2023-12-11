@@ -47,7 +47,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `Constraint` (`parameter`,`scope`),
                 INDEX `is_deleted` (`is_deleted` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_parameters ". $DB->error());
 
@@ -70,7 +70,7 @@ function plugin_glpi2mdt_install() {
                 KEY `is_in_sync` (`is_in_sync`),
                 KEY `type` (`type`),
                 KEY `category` (`category`)
-                ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
        $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_settings ". $DB->error());
    }
@@ -85,7 +85,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`id`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_roles ". $DB->error());
    }
@@ -104,7 +104,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`guid`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_applications ". $DB->error());
    }
@@ -120,7 +120,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`guid`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_application_groups ". $DB->error());
    }
@@ -134,9 +134,26 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`group_guid`, `application_guid`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_application_group_links ". $DB->error());
+   }
+
+   // Available OS, extracted from OS folder on installation share
+   if (!$DB->tableExists("glpi_plugin_glpi2mdt_operating_systems")) {
+      $query = "CREATE TABLE `glpi_plugin_glpi2mdt_operating_systems` (
+                   `id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				   `guid` varchar(38) COLLATE utf8_unicode_ci NOT NULL,
+                   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+				   `enable` boolean NOT NULL DEFAULT true,  
+                   `is_deleted` boolean NOT NULL DEFAULT false,
+                   `is_in_sync` boolean NOT NULL DEFAULT true,
+                PRIMARY KEY (`id`),
+                INDEX `is_deleted` (`is_deleted` ASC),
+                INDEX `is_in_sync`(`is_in_sync` ASC)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+      $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_operating_systems ". $DB->error());
    }
 
    // Available task sequences, extracted from XML file on installation share
@@ -152,7 +169,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`id`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_task_sequences ". $DB->error());
    }
@@ -168,7 +185,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`guid`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_task_sequence_groups ". $DB->error());
    }
@@ -182,7 +199,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`group_guid`, `sequence_guid`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_task_sequence_group_links ". $DB->error());
    }
@@ -201,7 +218,7 @@ function plugin_glpi2mdt_install() {
                 UNIQUE KEY (`id`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_models ". $DB->error());
    }
 
@@ -217,7 +234,7 @@ function plugin_glpi2mdt_install() {
                 PRIMARY KEY (`column_name`),
                 INDEX `is_deleted` (`is_deleted` ASC),
                 INDEX `is_in_sync`(`is_in_sync` ASC)
-                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->query($query) or die("error creating glpi_plugin_glpi2mdt_descriptions ". $DB->error());
    }
