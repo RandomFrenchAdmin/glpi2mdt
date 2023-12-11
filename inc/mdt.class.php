@@ -101,7 +101,7 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
       $currentversion = PLUGIN_GLPI2MDT_VERSION;
       $latestversion = $this->globalconfig['LatestVersion'];
       if (version_compare($currentversion, $latestversion, '<')) {
-         $this->globalconfig['newversion'] = sprintf(__('A new version of plugin glpi2mdt is available: v%s'), $latestversion);
+         $this->globalconfig['newversion'] = sprintf(__('Une nouvelle version du plugin est disponible: v%s'), $latestversion);
       }
 
       // Connection to MSSQL using SQLSRV PHP module
@@ -110,7 +110,7 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
       }
       // Check if connection is successful, die if not
       if ($DBLink === false) {
-         $error = __("Can't connect to MSSQL database using PHP SQLSRV module. Check configuration", 'glpi2mdt');
+         $error = __("Impossible de se connecter à la base SQL. Merci de vérifier la configuration", 'glpi2mdt');
          Session::addMessageAfterRedirect($error, true, ERROR);
       }
 
@@ -148,11 +148,11 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 
       echo '<table class="tab_cadre_fixe">';
       echo '<tr class="tab_bg_1">';
-      echo '<th>'.__("Testing connection using PHP SQLSRV module", 'glpi2mdt').'</th></tr><tr><td>';
+      echo '<th>'.__("Test de la connexion avec module PHP SQLSRV", 'glpi2mdt').'</th></tr><tr><td>';
       // Connection to MSSQL
       if ($this->DBLink) {
          echo "<font color='green'>";
-         echo __("Database login OK!", 'glpi2mdt');
+         echo __("Connexion réussie !", 'glpi2mdt');
          echo "</font><br>";
          // Simple query to get database version
          $version = $this->query('SELECT @@VERSION');
@@ -167,12 +167,12 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
             echo "</font><br>";
          } else {
             echo "<h1><font color='red'>";
-            echo __("Could not count tables in schema", 'glpi2mdt')." ".$this->DBSchema;
+            echo __("Impossible de compter le nombre de table dans la base", 'glpi2mdt')." ".$this->DBSchema;
             echo "</font></h1><br>";
          }
       } else {
          echo "<h1><font color='red'>";
-         echo __("Database login KO!", 'glpi2mdt');
+         echo __("Connexion échouée !", 'glpi2mdt');
          echo "</font></h1><br>";
       }
       echo '</td>';

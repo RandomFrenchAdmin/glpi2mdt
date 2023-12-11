@@ -354,6 +354,18 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
       showSelectBox('Default task sequence', 'TaskSequenceID', $tasksequenceids, $settings);
       echo '</tr>';
 
+      // Operating system
+      echo '<tr class="tab_bg_1">';
+       $result = $DB->query("SELECT id, guid, name FROM glpi_plugin_glpi2mdt_operating_systems
+                                WHERE is_deleted=false AND enable=true");
+      // first value in array is "default"
+      $operatingsystemids['*undef*']=__("Default operating system", 'glpi2mdt');
+      while ($row = $DB->fetchAssoc($result)) {
+		   $operatingsystemids[$row['guid']]=$row['id'];
+      }
+      showSelectBox('Default operating system', 'OSValue', $operatingsystemids, $settings);
+      echo '</tr>';
+
       // Applications
 
       $query = "SELECT a.guid, a.shortname, g.name, a.enable
@@ -392,11 +404,11 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
       echo '<tr class="headerRow"><th colspan="4">'.__('Enable Installation Assistant dialogs', 'glpi2mdt').'<br></th></tr>';
       echo '<tr class="tab_bg_1">';
 
-      // BitLocker
+      // Applications
+      showSelectBox('Applications dialog', 'SkipApplications', $skip, $settings);
+	  
+	  // BitLocker
       showSelectBox('BitLocker dialog', 'SkipBitLocker', $skip, $settings);
-
-      // Capture
-      showSelectBox('Image capture dialog', 'SkipCapture', $skip, $settings);
 
       echo '</tr><tr>';
 
@@ -418,6 +430,9 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 
       // Package Display
       showSelectBox('Package display dialog', 'SkipPackageDisplay', $skip, $settings);
+	  
+	  // Capture
+      showSelectBox('Image capture dialog', 'SkipCapture', $skip, $settings);
 
       echo '</tr>';
       echo '</table>';

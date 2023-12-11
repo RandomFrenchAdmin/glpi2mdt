@@ -280,7 +280,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->queryOrDie("UPDATE glpi_plugin_glpi2mdt_application_group_links SET is_in_sync=false WHERE is_deleted=false");
          $nb = 0;
          foreach ($groups->group as $group) {
-            $name = $group->Name;
+			$name = str_replace('\\', ' - ', $group->Name);
             $guid = $group['guid'];
             if (isset($group['enable']) and ($group['enable'] == 'True')) {
                $enable = 'true'; } else {
@@ -412,11 +412,54 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->query("DELETE FROM glpi_plugin_glpi2mdt_task_sequence_group_links
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'task_sequence_group_links'.</td></tr></table>";
+            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'task_sequence_group_links'.</td></tr>";
          }
       } else {
          $ok = -1;
       }
+	  // Operating systems
+      // Mark lines in order to detect deleted ones in the source database
+      $dst = $MDT->globalconfig['FileShare'].'/OperatingSystems.xml';
+      $oss = PluginGlpi2mdtCronTask::checkFile($dst, $task, $cron);
+
+      if ($oss !== false) {
+         $DB->query("UPDATE glpi_plugin_glpi2mdt_operating_systems SET is_in_sync=false WHERE is_deleted=false");
+         $nb = 0;
+         foreach ($oss->os as $os) {
+            $name = $os->ImageName;
+            $guid = $os['guid'];
+            $id = $os->Name;
+            if (isset($os['enable']) and ($os['enable'] == 'True')) {
+               $enable = 'true'; } else {
+               $enable = 'false';
+               }
+               if (isset($os['hide']) and ($os['hide'] == 'True')) {
+                  $hide = 'true'; } else {
+                  $hide = 'false';
+                  }
+
+                  $query = "INSERT INTO glpi_plugin_glpi2mdt_operating_systems
+                    (`id`, `guid`, `name`, `enable`, `is_deleted`, `is_in_sync`)
+                    VALUES ('$id', '$guid', '$name', $enable, false, true)
+                  ON DUPLICATE KEY UPDATE guid='$guid', name='$name', enable=$enable, is_deleted=false, is_in_sync=true";
+                  $DB->queryOrDie($query, "Error loading MDT operating systems into GLPI database.");
+                  $nb += 1;
+         }
+         if (!$cron) {
+            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'operating_systems'.</td>";
+         }
+         // Mark lines which are not in MDT anymore as deleted
+         $result = $DB->query("SELECT count(*) as nb FROM glpi_plugin_glpi2mdt_operating_systems WHERE `is_in_sync`=false");
+         $row = $DB->fetchAssoc($result);
+         $nb = $row['nb'];
+         $DB->query("UPDATE glpi_plugin_glpi2mdt_operating_systems SET is_in_sync=true, is_deleted=true 
+                      WHERE is_in_sync=false AND is_deleted=false");
+         if (!$cron) {
+            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'operating_system'.</td></tr></table>";
+         }
+      } else {
+         $ok = -1;
+      }   
       return $ok;
    }
 
