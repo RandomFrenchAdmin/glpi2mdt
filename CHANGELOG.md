@@ -1,11 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-## [0.3.1] - 2023-12-05
+## [0.4.0] - 2023-12-11
 ## Added
-- Add possibility to choose OS (Several modifications are needed on the MDT database before)
+- Add possibility to choose OS (Several modifications are needed on the MDT database and deployment share before)
 
 ## Changed
 - Fix application group names (replace "\" caracter from XML source file)
+- Display "Applications dialog" selectbox
+- Use InnoDB instead of MyISAM
+
+## Removed
+- None
+  
+
+## [0.3.0] - 2022-02-13
+## Added
+- None
+
+## Changed
+- Change in the PHP MSSQL module used. Use of SQLSRV instead of ODBC
+- Replace function $DB->fetch_array deprecated by $DB->fetchAssoc
+- Compatibility GLPI 9.5.X
 
 ## Removed
 - None
@@ -20,19 +35,6 @@ All notable changes to this project will be documented in this file.
 
 ## Removed
  - None
- 
-## [0.3.0] - 2022-02-13
-## Added
-- None
-
-## Changed
-- Change in the PHP MSSQL module used. Use of SQLSRV instead of ODBC
-- Replace function $DB->fetch_array deprecated by $DB->fetchAssoc
-- Compatibility GLPI 9.5.X
-
-## Removed
-- None
-
 
 ## [0.2.1] - 2017-12-20
 ### Added
