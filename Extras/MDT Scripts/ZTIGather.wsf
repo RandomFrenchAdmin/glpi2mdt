@@ -2085,8 +2085,8 @@ Class ZTIGather
 			oEnvironment.Item("OSValue") = oUtility.SelectSingleNodeString(oOS.FindAllItems.Item(oEnvironment.Item("OSGUID")),"./Name")
 			oLogging.CreateEntry "OSValue is Now: " & oEnvironment.Item("OSValue"), LogTypeVerbose
 			oLogging.CreateEntry "OSGUID is Now: " & oEnvironment.Item("OSGUID"), LogTypeVerbose
-			If oEnvironment.Item("TaskSequenceID") = "" Then oEnvironment.Item("SkipTaskSequence") = "NO"
-		ElseIf oEnvironment.Item("OSValue") = "" and oEnvironment.Item("TaskSequenceID") = "" Then oEnvironment.Item("SkipTaskSequence") = "NO"
+		ElseIf oEnvironment.Item("OSValue") <> "" and oEnvironment.Item("TaskSequenceID") <> "" and Left(oEnvironment.Item("OSValue"), 1) <> "{" and Right(oEnvironment.Item("OSValue"), 1) <> "}" Then
+			oEnvironment.Item("SkipTaskSequence") = "NO"
 		End if
 
 	 	'Provide mapping between BuildID and TaskSequenceID
