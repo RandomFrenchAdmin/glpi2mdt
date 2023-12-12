@@ -52,7 +52,6 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
                  'LocalAdmin' => 'txt',
                  'Complexity' => 'txt',
                  'CheckNewVersion' => 'txt',
-                 'ReportUsage' => 'txt',
                  'LatestVersion' => 'txt'
                 );
    protected $globalconfig;

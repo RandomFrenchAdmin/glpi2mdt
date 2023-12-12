@@ -65,7 +65,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 
       //parse github releases (get last version number)
       $error = "";
-      $json_gh_releases = Toolbox::getURLContent("https://api.github.com/repos/DebugBill/glpi2mdt/releases", $error);
+      $json_gh_releases = Toolbox::getURLContent("https://api.github.com/repos/randomfrenchadmin/glpi2mdt/releases", $error);
       $all_gh_releases = json_decode($json_gh_releases, true);
       $released_tags = array();
       foreach ($all_gh_releases as $release) {
@@ -87,31 +87,6 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
             }
          }
       } else {
-         // Build a unique ID which will differentiate platforms (dev, prod..) behind the same public IP
-         $glpi2mdtconfig = new PluginGlpi2mdtConfig;
-         $globalconfig = $glpi2mdtconfig->globalconfig;
-         $rawid  = $globalconfig['DBServer'].$globalconfig['DBPort'].$globalconfig['DBSchema'].$globalconfig['DBLogin'];
-         $PL = hash('md5', $rawid, false);
-         $gets = "?PHP=".phpversion()."&G2M=$currentversion&PL=$PL";
-         // Are we allowed to report usage data?
-         $query = "SELECT value_char FROM glpi_plugin_glpi2mdt_parameters
-                     WHERE is_deleted=false AND scope='global' AND parameter='ReportUsage'";
-         if ($DB->fetchAssoc($DB->query($query))['value_char'] == 'YES') {
-            $CO = $globalconfig['Mode'];
-            $AP = $DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_applications WHERE is_deleted=false"))[0];
-            $AG = $DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_application_groups WHERE is_deleted=false"))[0];
-            $TS = $DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_task_sequences WHERE is_deleted=false"))[0];
-            $TG = $DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_task_sequence_groups WHERE is_deleted=false"))[0];
-            $RO = $DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_roles WHERE is_deleted=false"))[0];
-            $MO = $DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_models WHERE is_deleted=false"))[0];
-            $PK = 0; //$DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_packages WHERE is_deleted=false"))[0];
-            $ST = $DB->fetch_row($DB->query("SELECT count(*) FROM glpi_plugin_glpi2mdt_settings"))[0];
-            $gets = $gets."&CO=$CO&&AP=$AP&AG=$AG&TS=$TS&TG=$TG&RO=$RO&MO=$MO&PK=$PK&ST=$ST";
-         }
-         Toolbox::getURLContent("https://glpi2mdt.thauvin.org/report.php".$gets);
-         if ($cron) {
-            $task->log("https://glpi2mdt.thauvin.org/report.php".$gets);
-         }
          $query = "INSERT INTO glpi_plugin_glpi2mdt_parameters
                           (`parameter`, `scope`, `value_char`, `is_deleted`)
                           VALUES ('LatestVersion', 'global', '$latest_version', false)
@@ -120,7 +95,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          if (version_compare($currentversion, $latest_version, '<')) {
             $message = sprintf(__('A new version of plugin glpi2mdt is available: v%s'), $latest_version);
          } else {
-            $message = sprintf(__('You have the latest available version of glpi2mdti: v%s'), $latest_version);
+            $message = sprintf(__('You have the latest available version of glpi2mdt: v%s'), $latest_version);
          }
          if ($cron) {
                $task->log($message);
@@ -159,7 +134,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
       //
       // Load available settings fields and descriptions from MDT
       //
-      $result = $MDT->queryOrDie('SELECT  ColumnName, CategoryOrder, Category, Description
+      $result = $MDT->queryOrDie('SELECT ColumnName, CategoryOrder, Category, Description
                       FROM dbo.Descriptions', "???");
       $nb = $MDT->numrows($result);
       // Mark lines in order to detect deleted ones in the source database
@@ -179,7 +154,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->queryOrDie($query, "Error loading MDT descriptions to GLPI database.");
       }
       if (!$cron) {
-         echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')."'descriptions'.".'</td>';
+         echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'descriptions'.".'</td>';
       }
       $result = $DB->query("SELECT count(*) as nb FROM `glpi_plugin_glpi2mdt_descriptions` WHERE `is_in_sync`=false");
       $row = $DB->fetchAssoc($result);
@@ -264,7 +239,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->query("UPDATE glpi_plugin_glpi2mdt_applications SET is_in_sync=true, is_deleted=true 
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')."'applications' </td><tr>";
+            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'applications' </td><tr>";
          }
       } else {
          $ok = -1;
@@ -401,7 +376,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
                   }
          }
          if (!$cron) {
-            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'task sequence groups'.</td>";
+            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'task_sequence_groups'.</td>";
          }
          // Mark lines which are not in MDT anymore as deleted
          $result = $DB->query("SELECT count(*) as nb FROM glpi_plugin_glpi2mdt_task_sequence_groups WHERE `is_in_sync`=false");
@@ -455,7 +430,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->query("UPDATE glpi_plugin_glpi2mdt_operating_systems SET is_in_sync=true, is_deleted=true 
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'operating_system'.</td></tr></table>";
+            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'operating_systems'.</td></tr></table>";
          }
       } else {
          $ok = -1;

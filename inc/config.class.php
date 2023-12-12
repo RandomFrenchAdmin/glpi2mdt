@@ -187,13 +187,6 @@ class PluginGlpi2mdtConfig extends PluginGlpi2mdtMdt {
        <tr class="tab_bg_1">
         <td>
       <?php
-        echo __('Report usage data (anonymous data to help in designing the plugin)', 'glpi2mdt');
-        echo "</td><td>";
-        Dropdown::showFromArray("ReportUsage", $yesno,
-        array('value' => $this->globalconfig['ReportUsage'])
-        );
-        echo '</td>';
-        echo '</tr>';
       if (PluginGlpi2mdtConfig::canUpdate()) {
          echo '<tr class="tab_bg_1">';
          echo '<td>';
