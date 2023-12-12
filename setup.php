@@ -26,12 +26,12 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_GLPI2MDT_VERSION', '0.4.0');
+define('PLUGIN_GLPI2MDT_VERSION', '0.4.1');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_GLPI2MDT_MIN_GLPI", "9.5");
+define('PLUGIN_GLPI2MDT_GLPI_MIN_VERSION', '9.5');
 // Maximum GLPI version, exclusive
-//define("PLUGIN_GLPI2MDT_MAX_GLPI", "9.6");
+define('PLUGIN_GLPI2MDT_GLPI_MAX_VERSION', '10.1');
 
 /**
  * Init hooks of the plugin.
@@ -84,9 +84,8 @@ function plugin_version_glpi2mdt() {
 		'license'        => 'GPLv3+',
 		'requirements'   => [
 			'glpi' => [
-				'min' => PLUGIN_GLPI2MDT_MIN_GLPI,
-//				'max' =>dd PLUGIN_GLPI2MDT_MAX_GLPI,  Who knows if it will be compatible with next version. Maybe yes
-				'dev' => true, //Required to allow 9.2-dev
+				'min' => PLUGIN_GLPI2MDT_GLPI_MIN_VERSION,
+				'max' => PLUGIN_GLPI2MDT_GLPI_MAX_VERSION,
 			]
 		]
 	];

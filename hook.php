@@ -241,7 +241,7 @@ function plugin_glpi2mdt_install() {
    // Remove cron tasks
    Crontask::Unregister('Glpi2mdtCrontask');
 
-   // Create or update crontask for checking new plugin updates and reporting usage
+   // Create or update crontask for checking new plugin updates
    CronTask::Register('PluginGlpi2mdtCrontask', 'checkGlpi2mdtUpdate', (3600 * 24),
                          array('mode' => 2, 'allowmode' => 3, 'logs_lifetime' => 30,
                                'comment' => 'Daily task checking for updates'));
