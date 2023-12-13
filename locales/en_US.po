@@ -1,31 +1,25 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Copyright (C) 2022 Blaise Thauvin
-# This file is distributed under the same license as the glpi2mdt package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
-# Translators:
-# Blaise Thauvin <glpi2mdt@thauvin.org>, 2022
-# 
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: glpi2mdt 0.3.0\n"
 "Report-Msgid-Bugs-To: glpi2mdt at thauvin.org\n"
 "POT-Creation-Date: 2022-02-13 22:44+0100\n"
-"PO-Revision-Date: 2017-08-27 20:05+0000\n"
+"PO-Revision-Date: 2023-12-13 22:46+0000\n"
 "Last-Translator: Blaise Thauvin <glpi2mdt@thauvin.org>, 2022\n"
-"Language-Team: English (United States) (https://www.transifex.com/glpi2mdt/teams/78175/en_US/)\n"
+"Language-Team: English (USA)\n"
+"Language: en-US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en_US\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Loco-Source-Locale: fr_FR\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco https://localise.biz/"
 
-#: inc/config.class.php:236 inc/computer.class.php:443
+#: inc/config.class.php:236 inc/computer.class.php:443 
 #: inc/crontask.class.php:121 inc/mdt.class.php:104 inc/config.class.php:223
 #, php-format
-msgid "A new version of plugin glpi2mdt is available: v%s"
-msgstr "A new version of plugin glpi2mdt is available: v%s"
+msgid "A new version is available: v%s"
+msgstr "A new version is available: v%s"
 
 #: inc/computer.class.php:389
 msgid "Activate"
@@ -177,8 +171,7 @@ msgstr "Loose Master-Slave"
 msgid "Master-Master"
 msgstr "Master-Master"
 
-#: inc/config.class.php:87 inc/computer.class.php:292
-#: inc/computer.class.php:69
+#: inc/config.class.php:87 inc/computer.class.php:292 inc/computer.class.php:69
 msgid "NO"
 msgstr "No"
 
@@ -214,7 +207,7 @@ msgstr "Same password on all machines"
 msgid "Save"
 msgstr "Save"
 
-#: inc/config.class.php:140 inc/mdt.class.php:166 inc/mdt.class.php:167
+#: inc/config.class.php:140 inc/mdt.class.php:166 inc/mdt.class.php:167 
 #: inc/config.class.php:127
 msgid "Schema"
 msgstr "Schema"
@@ -251,15 +244,14 @@ msgstr "Testing connection using PHP SQLSRV module"
 msgid "Update base data from MDT XML files and MS-SQL DB"
 msgstr "Update base data from MDT XML files and MS-SQL DB"
 
-#: inc/config.class.php:86 inc/computer.class.php:291
-#: inc/computer.class.php:67
+#: inc/config.class.php:86 inc/computer.class.php:291 inc/computer.class.php:67
 msgid "YES"
 msgstr "Yes"
 
 #: inc/crontask.class.php:123
 #, php-format
-msgid "You have the latest available version of glpi2mdti: v%s"
-msgstr "You have the latest available version of glpi2mdti: v%s"
+msgid "You have the latest available version"
+msgstr "You have the latest available version"
 
 #: inc/config.class.php:170 inc/config.class.php:157
 msgid "append '-%hostname%' to password"
@@ -269,14 +261,14 @@ msgstr "append '-%hostname%' to password"
 msgid "contains"
 msgstr "contains"
 
-#: inc/crontask.class.php:190 inc/crontask.class.php:267
-#: inc/crontask.class.php:320 inc/crontask.class.php:363
+#: inc/crontask.class.php:190 inc/crontask.class.php:267 
+#: inc/crontask.class.php:320 inc/crontask.class.php:363 
 #: inc/crontask.class.php:415
 msgid "lines deleted from table"
 msgstr "line's) deleted from table"
 
-#: inc/crontask.class.php:182 inc/crontask.class.php:219
-#: inc/crontask.class.php:258 inc/crontask.class.php:309
+#: inc/crontask.class.php:182 inc/crontask.class.php:219 
+#: inc/crontask.class.php:258 inc/crontask.class.php:309 
 #: inc/crontask.class.php:354 inc/crontask.class.php:404
 msgid "lines loaded into table"
 msgstr "line(s) loaded into table"
@@ -284,3 +276,18 @@ msgstr "line(s) loaded into table"
 #: inc/mdt.class.php:166 inc/mdt.class.php:167
 msgid "tables"
 msgstr "tables"
+
+msgid "Default operating system"
+msgstr "Default operating system"
+
+msgid "SQL view has been refreshed"
+msgstr "SQL view has been refreshed"
+
+msgid "ERROR : unable to refresh SQL view"
+msgstr "ERROR : unable to refresh SQL view"
+
+msgid "Custom variable has been loaded into table"
+msgstr "Custom variable has been loaded into table"
+
+msgid "Custom variable is already loaded into table"
+msgstr "Custom variable is already loaded into table"

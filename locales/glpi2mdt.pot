@@ -1,26 +1,25 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Copyright (C) 2022 Blaise Thauvin
-# This file is distributed under the same license as the glpi2mdt package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: glpi2mdt 0.3.0\n"
 "Report-Msgid-Bugs-To: glpi2mdt at thauvin.org\n"
-"POT-Creation-Date: 2022-02-13 22:44+0100\n"
+"POT-Creation-Date: 2023-12-13 22:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: fr_FR\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco https://localise.biz/"
 
-#: inc/config.class.php:236 inc/computer.class.php:443
+#: inc/config.class.php:236 inc/computer.class.php:443 
 #: inc/crontask.class.php:121 inc/mdt.class.php:104 inc/config.class.php:223
 #, php-format
-msgid "A new version of plugin glpi2mdt is available: v%s"
+msgid "A new version is available: v%s"
 msgstr ""
 
 #: inc/computer.class.php:389
@@ -208,7 +207,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: inc/config.class.php:140 inc/mdt.class.php:166 inc/mdt.class.php:167
+#: inc/config.class.php:140 inc/mdt.class.php:166 inc/mdt.class.php:167 
 #: inc/config.class.php:127
 msgid "Schema"
 msgstr ""
@@ -251,7 +250,7 @@ msgstr ""
 
 #: inc/crontask.class.php:123
 #, php-format
-msgid "You have the latest available version of glpi2mdti: v%s"
+msgid "You have the latest available version"
 msgstr ""
 
 #: inc/config.class.php:170 inc/config.class.php:157
@@ -262,18 +261,33 @@ msgstr ""
 msgid "contains"
 msgstr ""
 
-#: inc/crontask.class.php:190 inc/crontask.class.php:267
-#: inc/crontask.class.php:320 inc/crontask.class.php:363
+#: inc/crontask.class.php:190 inc/crontask.class.php:267 
+#: inc/crontask.class.php:320 inc/crontask.class.php:363 
 #: inc/crontask.class.php:415
 msgid "lines deleted from table"
 msgstr ""
 
-#: inc/crontask.class.php:182 inc/crontask.class.php:219
-#: inc/crontask.class.php:258 inc/crontask.class.php:309
+#: inc/crontask.class.php:182 inc/crontask.class.php:219 
+#: inc/crontask.class.php:258 inc/crontask.class.php:309 
 #: inc/crontask.class.php:354 inc/crontask.class.php:404
 msgid "lines loaded into table"
 msgstr ""
 
 #: inc/mdt.class.php:166 inc/mdt.class.php:167
 msgid "tables"
+msgstr ""
+
+msgid "Default operating system"
+msgstr ""
+
+msgid "SQL view has been refreshed"
+msgstr ""
+
+msgid "ERROR : unable to refresh SQL view"
+msgstr ""
+
+msgid "Custom variable has been loaded into table"
+msgstr ""
+
+msgid "Custom variable is already loaded into table"
 msgstr ""
