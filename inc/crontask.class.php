@@ -131,11 +131,38 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          echo '<table class="tab_cadre_fixe">';
       }
 
+	  // Add custom OS value into the "descriptions" table if it doesn't exist
+	  $CheckOSValue = $MDT->query("SELECT count(*) as nb FROM dbo.Descriptions WHERE ColumnName='OSValue'");
+	  $row = $MDT->fetch_assoc($CheckOSValue);
+      $CheckOSValue = $row['nb'];
+	  if ($CheckOSValue == 0) {
+		$AddValueDescriptions = $MDT->query("INSERT INTO dbo.Descriptions (ColumnName, CategoryOrder, Category, Description) VALUES ('OSValue', '8', 'Miscellaneous', 'Operating system GUID')");
+		if ($AddValueDescriptions !== FALSE){echo "<tr class='tab_bg_1'><td>Custom variable has been loaded into table 'dbo.Descriptions'</td></tr>";}
+	  } else {echo "<tr class='tab_bg_1'><td>Custom variable is already loaded into table 'dbo.Descriptions'</td></tr>";}
+	  // Add custom OS value into the "settings" table if it doesn't exist
+	  $CheckOSValue = $MDT->query("SELECT count(*) as nb FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Settings' AND COLUMN_NAME = 'OSValue'");
+	  $row = $MDT->fetch_assoc($CheckOSValue);
+      $CheckOSValue = $row['nb'];
+	  if ($CheckOSValue == 0) {
+		$AddValueSettings = $MDT->query('ALTER TABLE dbo.Settings ADD "OSValue" VARCHAR(38) NULL');
+		if ($AddValueSettings !== FALSE){
+			echo "<tr class='tab_bg_1'><td>Custom OSValue variable has been loaded into table 'dbo.Settings'</td>";
+			$RefreshViewQuery = "
+			EXECUTE sp_refreshview '[dbo].[ComputerSettings]'
+			EXECUTE sp_refreshview '[dbo].[LocationSettings]'
+			EXECUTE sp_refreshview '[dbo].[MakeModelSettings]'
+			EXECUTE sp_refreshview '[dbo].[RoleSettings]'
+			";
+			$RefreshView = $MDT->query($RefreshViewQuery);
+			if($RefreshView){echo "<td>SQL view has been refreshed</td></tr>";} else {echo "<td>ERROR : unable to refresh SQL view</td></tr>";}
+		}
+	  } else {echo "<tr class='tab_bg_1'><td>Custom OSValue variable is already loaded into table 'dbo.Settings'</td>";}
+
       //
       // Load available settings fields and descriptions from MDT
       //
-      $result = $MDT->queryOrDie('SELECT ColumnName, CategoryOrder, Category, Description FROM dbo.Descriptions');
-      $nb = 0;
+	  $result = $MDT->queryOrDie('SELECT ColumnName, CategoryOrder, Category, Description FROM dbo.Descriptions');
+	  $nb = 0;
       // Mark lines in order to detect deleted ones in the source database
       $DB->query("UPDATE `glpi_plugin_glpi2mdt_descriptions` SET is_in_sync=false WHERE is_deleted=false");
       // Hopefully there are less than 300 lines, do an atomic insert/update
