@@ -64,9 +64,9 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
       $result = $DB->query("SELECT value FROM glpi_plugin_glpi2mdt_settings 
                               WHERE type='C' AND category='C' AND `key`='OSInstall' AND id=$id");
       if (($DB->numrows($result) == 1) AND ($DB->fetchAssoc($result)['value'] == 'YES')) {
-         return self::createTabEntry(__('Auto Install', 'glpi2mdt'), __('YES'));
+         return self::createTabEntry(__('Auto Install', 'glpi2mdt'), __('YES', 'glpi2mdt'));
       } else {
-         return self::createTabEntry(__('Auto Install', 'glpi2mdt'), __('NO'));
+         return self::createTabEntry(__('Auto Install', 'glpi2mdt'), __('NO', 'glpi2mdt'));
       }
    }
 

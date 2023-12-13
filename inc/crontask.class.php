@@ -93,9 +93,9 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
                    ON DUPLICATE KEY UPDATE value_char='$latest_version', value_num=NULL, is_deleted=false";
          $DB->queryOrDie($query, "Database error");
          if (version_compare($currentversion, $latest_version, '<')) {
-            $message = sprintf(__('A new version of plugin glpi2mdt is available: v%s'), $latest_version);
+            $message = sprintf(__("A new version is available: v%s", 'glpi2mdt'), $latest_version);
          } else {
-            $message = sprintf(__('You have the latest available version of glpi2mdt: v%s'), $latest_version);
+            $message = sprintf(__("You have the latest available version"));
          }
          if ($cron) {
                $task->log($message);
@@ -137,8 +137,8 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
       $CheckOSValue = $row['nb'];
 	  if ($CheckOSValue == 0) {
 		$AddValueDescriptions = $MDT->query("INSERT INTO dbo.Descriptions (ColumnName, CategoryOrder, Category, Description) VALUES ('OSValue', '8', 'Miscellaneous', 'Operating system GUID')");
-		if ($AddValueDescriptions !== FALSE){echo "<tr class='tab_bg_1'><td>Custom variable has been loaded into table 'dbo.Descriptions'</td></tr>";}
-	  } else {echo "<tr class='tab_bg_1'><td>Custom variable is already loaded into table 'dbo.Descriptions'</td></tr>";}
+		if ($AddValueDescriptions !== FALSE){echo "<tr class='tab_bg_1'><td>".__("Custom variable has been loaded into table", 'glpi2mdt')." 'dbo.Descriptions'.</td></tr>";}
+	  } else {echo "<tr class='tab_bg_1'><td>".__("Custom variable is already loaded into table", 'glpi2mdt')." 'dbo.Descriptions'.</td></tr>";}
 	  // Add custom OS value into the "settings" table if it doesn't exist
 	  $CheckOSValue = $MDT->query("SELECT count(*) as nb FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Settings' AND COLUMN_NAME = 'OSValue'");
 	  $row = $MDT->fetch_assoc($CheckOSValue);
@@ -146,7 +146,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 	  if ($CheckOSValue == 0) {
 		$AddValueSettings = $MDT->query('ALTER TABLE dbo.Settings ADD "OSValue" VARCHAR(38) NULL');
 		if ($AddValueSettings !== FALSE){
-			echo "<tr class='tab_bg_1'><td>Custom OSValue variable has been loaded into table 'dbo.Settings'</td>";
+			echo "<tr class='tab_bg_1'><td>".__("Custom variable has been loaded into table", 'glpi2mdt')." 'dbo.Settings'.</td>";
 			$RefreshViewQuery = "
 			EXECUTE sp_refreshview '[dbo].[ComputerSettings]'
 			EXECUTE sp_refreshview '[dbo].[LocationSettings]'
@@ -156,7 +156,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 			$RefreshView = $MDT->query($RefreshViewQuery);
 			if($RefreshView){echo "<td>SQL view has been refreshed</td></tr>";} else {echo "<td>ERROR : unable to refresh SQL view</td></tr>";}
 		}
-	  } else {echo "<tr class='tab_bg_1'><td>Custom variable is already loaded into table 'dbo.Settings'</td>";}
+	  } else {echo "<tr class='tab_bg_1'><td>".__("Custom variable is already loaded into table", 'glpi2mdt')." 'dbo.Settings'.</td>";}
 
       //
       // Load available settings fields and descriptions from MDT
@@ -180,7 +180,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->queryOrDie($query, "Error loading MDT descriptions to GLPI database.");
       }
       if (!$cron) {
-         echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'descriptions'.".'</td>';
+         if ($nb !== 0){echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'descriptions'.".'</td>';}
       }
       $result = $DB->query("SELECT count(*) as nb FROM `glpi_plugin_glpi2mdt_descriptions` WHERE `is_in_sync`=false");
       $row = $DB->fetchAssoc($result);
@@ -188,7 +188,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
       $DB->query("UPDATE glpi_plugin_glpi2mdt_descriptions SET is_in_sync=true, is_deleted=true 
                       WHERE is_in_sync=false AND is_deleted=false");
       if (!$cron) {
-         echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'descriptions'.".'</td></tr>';
+         if ($nb !== 0){echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'descriptions'.".'</td></tr>';}
       }
 
       //
@@ -217,7 +217,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
       $row =$MDT->fetch_array($result);
       $nb = $row['nb'];
       if (!$cron) {
-         echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'roles'.".'</td></tr>';
+         if ($nb !== 0){echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'roles'.".'</td></tr>';}
       }
 
       $MDT->free_result($result);
@@ -256,7 +256,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
                   $nb += 1;
          }
          if (!$cron) {
-            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'applications'.</td>";
+            if ($nb !== 0){echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'applications'.</td>";}
          }
          // Mark lines which are not in MDT anymore as deleted
          $result = $DB->query("SELECT count(*) as nb FROM glpi_plugin_glpi2mdt_applications WHERE `is_in_sync`=false");
@@ -265,7 +265,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->query("UPDATE glpi_plugin_glpi2mdt_applications SET is_in_sync=true, is_deleted=true 
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'applications' </td><tr>";
+            if ($nb !== 0){echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'applications' </td><tr>";}
          }
       } else {
          $ok = -1;
@@ -307,7 +307,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
                   }
          }
          if (!$cron) {
-            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'application groups'.</td>";
+            if ($nb !== 0){echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'application groups'.</td>";}
          }
          // Mark lines which are not in MDT anymore as deleted
          $result = $DB->queryOrDie("SELECT count(*) as nb FROM glpi_plugin_glpi2mdt_application_groups WHERE `is_in_sync`=false");
@@ -318,7 +318,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->queryOrDie("DELETE FROM glpi_plugin_glpi2mdt_application_group_links 
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'application_group_links'.</td></tr>";
+            if ($nb !== 0){echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'application_group_links'.</td></tr>";}
          }
       } else {
          $ok = -1;
@@ -352,7 +352,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
                   $nb += 1;
          }
          if (!$cron) {
-            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'task_sequences'.</td>";
+            if ($nb !== 0){echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'task_sequences'.</td>";}
          }
          // Mark lines which are not in MDT anymore as deleted
          $result = $DB->query("SELECT count(*) as nb FROM glpi_plugin_glpi2mdt_task_sequences WHERE `is_in_sync`=false");
@@ -361,7 +361,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->query("UPDATE glpi_plugin_glpi2mdt_task_sequences SET is_in_sync=true, is_deleted=true 
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'task_sequence'.</td></tr>";
+            if ($nb !== 0){echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'task_sequence'.</td></tr>";}
          }
       } else {
          $ok = -1;
@@ -402,7 +402,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
                   }
          }
          if (!$cron) {
-            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'task_sequence_groups'.</td>";
+            if ($nb !== 0){echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'task_sequence_groups'.</td>";}
          }
          // Mark lines which are not in MDT anymore as deleted
          $result = $DB->query("SELECT count(*) as nb FROM glpi_plugin_glpi2mdt_task_sequence_groups WHERE `is_in_sync`=false");
@@ -413,7 +413,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->query("DELETE FROM glpi_plugin_glpi2mdt_task_sequence_group_links
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'task_sequence_group_links'.</td></tr>";
+            if ($nb !== 0){echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'task_sequence_group_links'.</td></tr>";}
          }
       } else {
          $ok = -1;
@@ -447,7 +447,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
                   $nb += 1;
          }
          if (!$cron) {
-            echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'operating_systems'.</td>";
+            if ($nb !== 0){echo "<tr class='tab_bg_1'><td>$nb ".__("lines loaded into table", 'glpi2mdt')." 'operating_systems'.</td>";}
          }
          // Mark lines which are not in MDT anymore as deleted
          $result = $DB->query("SELECT count(*) as nb FROM glpi_plugin_glpi2mdt_operating_systems WHERE `is_in_sync`=false");
@@ -456,7 +456,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $DB->query("UPDATE glpi_plugin_glpi2mdt_operating_systems SET is_in_sync=true, is_deleted=true 
                       WHERE is_in_sync=false AND is_deleted=false");
          if (!$cron) {
-            echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'operating_systems'.</td></tr></table>";
+            if ($nb !== 0){echo "<td>$nb ".__("lines deleted from table", 'glpi2mdt')." 'operating_systems'.</td></tr></table>";}
          }
       } else {
          $ok = -1;
