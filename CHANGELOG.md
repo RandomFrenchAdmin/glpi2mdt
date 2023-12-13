@@ -1,5 +1,28 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [0.4.2] - 2023-12-13
+## Added
+- Function to add custom os value to the MDT database (replace SQL files manual executions)
+
+## Changed
+- Fix all cronUpdateBaseconfigFromMDT function log texts.
+
+## Removed
+- None
+
+  
+## [0.4.1] - 2023-12-12
+## Added
+- None
+
+## Changed
+- Fix some log texts.
+- Github URL replacment.
+
+## Removed
+- Delete telemetry to DebugBill reporting server.
+
+  
 ## [0.4.0] - 2023-12-11
 ## Added
 - Add possibility to choose OS (Several modifications are needed on the MDT database and deployment share before)
