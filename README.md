@@ -1,4 +1,4 @@
-# glpi2mdt
+# GLPI2MDT
 
 ## Introduction
 This goal of this plugin is to interface GLPI with MDT, the Microsoft Deployment Toolkit in a way quite similar to what SSCM can do.
