@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 - Function to add custom os value to the MDT database (replace SQL files manual executions)
 
 ## Changed
-- Optimizations of cronUpdateBaseconfigFromMDT function
+- Optimization of cronUpdateBaseconfigFromMDT function
 - Traduction is complete (french and english only)
 
 ## Removed
