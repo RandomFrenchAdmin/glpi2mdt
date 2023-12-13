@@ -1,7 +1,0 @@
-dist/
-vendor/
-.gh_token
-*.min.*
-test*
-locales/glpi2mdt.header
-kickstart/
