@@ -134,9 +134,8 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
       //
       // Load available settings fields and descriptions from MDT
       //
-      $result = $MDT->queryOrDie('SELECT ColumnName, CategoryOrder, Category, Description
-                      FROM dbo.Descriptions', "???");
-      $nb = $MDT->numrows($result);
+      $result = $MDT->queryOrDie('SELECT ColumnName, CategoryOrder, Category, Description FROM dbo.Descriptions');
+      $nb = 0;
       // Mark lines in order to detect deleted ones in the source database
       $DB->query("UPDATE `glpi_plugin_glpi2mdt_descriptions` SET is_in_sync=false WHERE is_deleted=false");
       // Hopefully there are less than 300 lines, do an atomic insert/update
@@ -145,7 +144,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
          $category_order = $row['CategoryOrder'];
          $category = $row['Category'];
          $description = $row['Description'];
-
+		 $nb++;
          $query = "INSERT INTO glpi_plugin_glpi2mdt_descriptions
                     (`column_name`, `category_order`, `category`, `description`, `is_in_sync`, `is_deleted`)
                     VALUES ('$column_name', $category_order, '$category', '$description', true, false)
