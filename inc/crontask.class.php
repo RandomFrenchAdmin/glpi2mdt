@@ -156,7 +156,7 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 			$RefreshView = $MDT->query($RefreshViewQuery);
 			if($RefreshView){echo "<td>SQL view has been refreshed</td></tr>";} else {echo "<td>ERROR : unable to refresh SQL view</td></tr>";}
 		}
-	  } else {echo "<tr class='tab_bg_1'><td>Custom OSValue variable is already loaded into table 'dbo.Settings'</td>";}
+	  } else {echo "<tr class='tab_bg_1'><td>Custom variable is already loaded into table 'dbo.Settings'</td>";}
 
       //
       // Load available settings fields and descriptions from MDT
