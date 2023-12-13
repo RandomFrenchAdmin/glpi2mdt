@@ -14,8 +14,7 @@
 That's all for now!
 
 ## Initial setup (MDT part)
-* Copy all scripts from "Extras/Scripts" folder to the "Scripts" folder on your MDT deployment share.
-* Adapt and execute all SQL queries from "Extras/SQL Queries" folder into your SQL Server. These scripts add a custom value used by the plugin into MDT's database.
+* Copy all scripts from "Extras" folder to the "Scripts" folder on your MDT deployment share.
 * Add "OSValue" property into your [Settings] section in "CustomSettings.ini" file from MDT's "Control" folder.
 
 ## Daily usage
