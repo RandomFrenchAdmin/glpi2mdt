@@ -21,8 +21,8 @@ The plugin will therefore get its full potential when used in conjunction with "
 This plugin works fine on my specific configuration 
 * MDT on Windows Server 2022
 * MS-SQL Server 2022
-* GLPI 10.0.11 on Debian 11
-* PHP 8.2
+* GLPI 10.0.15 on Debian 11
+* PHP 8.3
 It is developed and tested in this environment only. If you experience problem with a different configuration please report the issue on GitHub. I'll do my best to make it compatible with other setups as long as I am aware of the issue.
 
 ## Prerequisites
