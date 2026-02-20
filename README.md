@@ -18,10 +18,11 @@ In order to work well the plugin needs to have as much informations as possible 
 ## Restrictions
 
 This plugin works fine on my specific configuration 
-	* MDT on Windows Server 2022
-	* MS-SQL Server 2022
-	* GLPI 11.0.5 on Debian 13
-	* PHP 8.3
+* MDT on Windows Server 2022
+*  MS-SQL Server 2022
+*  GLPI 11.0.5 on Debian 13
+*  PHP 8.3
+
 It is developed and tested in this environment only. If you experience problem with a different configuration please report the issue on GitHub. I'll do my best to make it compatible with other setups as long as I am aware of the issue.
 
 ## Prerequisites
