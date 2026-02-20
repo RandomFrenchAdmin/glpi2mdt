@@ -26,56 +26,53 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_GLPI2MDT_VERSION', '0.4.2');
+define('PLUGIN_GLPI2MDT_VERSION', '0.5.0');
 
 // Minimal GLPI version, inclusive
-define('PLUGIN_GLPI2MDT_GLPI_MIN_VERSION', '9.5');
+define('PLUGIN_GLPI2MDT_GLPI_MIN_VERSION', '11.0');
 // Maximum GLPI version, exclusive
-define('PLUGIN_GLPI2MDT_GLPI_MAX_VERSION', '10.1');
+define('PLUGIN_GLPI2MDT_GLPI_MAX_VERSION', '12.0');
 
 /**
- * Init hooks of the plugin.
- *
- * @return void
- */
+	* Init hooks of the plugin.
+	*
+	* @return void
+*/
 function plugin_init_glpi2mdt() {
-   global $PLUGIN_HOOKS;
+	global $PLUGIN_HOOKS;
 
-   $PLUGIN_HOOKS['csrf_compliant']['glpi2mdt'] = true;
-   // Any update to a computer should trigger an update in MDT, just in case....
-   $PLUGIN_HOOKS['item_update']['glpi2mdt']    = array('Computer' => 'updateMDT');
+	$PLUGIN_HOOKS['csrf_compliant']['glpi2mdt'] = true;
+	// Any update to a computer should trigger an update in MDT, just in case....
+	$PLUGIN_HOOKS['item_update']['glpi2mdt']    = array('Computer' => 'updateMDT');
 
-   $Plugin = new Plugin();
+	$Plugin = new Plugin();
 
-   if ($Plugin->isActivated('glpi2mdt')) {
+	if ($Plugin->isActivated('glpi2mdt')) {
+		// Register classes into GLPI plugin factory if plugin is active
 
-      // Register classes into GLPI plugin factory if plugin is active
+		// Add tab on Computers page
+		Plugin::registerClass('PluginGlpi2mdtComputer', array('addtabon' => array('Computer')));
+		Plugin::registerClass('PluginGlpi2mdtConfig');
 
-      // Add tab on Computers page
-      Plugin::registerClass('PluginGlpi2mdtComputer', array('addtabon' => array('Computer')));
-      Plugin::registerClass('PluginGlpi2mdtConfig');
-
-      // Config page
-      if (Session::haveRight('config', UPDATE)) {
-         $PLUGIN_HOOKS['config_page']['glpi2mdt'] = 'front/config.form.php';
-      }
-      /*
-       * Deploy submenu entries
-       */
-      if (Session::haveRight('plugin_glpi2mdt_configuration', READ)) {
-         $PLUGIN_HOOKS['submenu_entry']['glpi2mdt']['config'] = 'front/config.form.php';
-      }
-   }
+		// Config page
+		if (Session::haveRight('config', UPDATE)) {
+			$PLUGIN_HOOKS['config_page']['glpi2mdt'] = 'front/config.form.php';
+		}
+		// Deploy submenu entries
+		if (Session::haveRight('plugin_glpi2mdt_configuration', READ)) {
+			$PLUGIN_HOOKS['submenu_entry']['glpi2mdt']['config'] = 'front/config.form.php';
+		}
+	}
 }
 
 
 /**
- * Get the name and the version of the plugin
- *
- * @return array
- */
+	* Get the name and the version of the plugin
+	*
+	* @return array
+*/
 function plugin_version_glpi2mdt() {
-   return [
+	return [
 		'name'           => 'GLPI 2 MDT',
 		'shortname'      => 'glpi2mdt',
 		'version'        => PLUGIN_GLPI2MDT_VERSION,
@@ -92,48 +89,48 @@ function plugin_version_glpi2mdt() {
 }
 
 /**
- * Check pre-requisites before install
- *
- * @return boolean
- */
+	* Check pre-requisites before install
+	*
+	* @return boolean
+*/
 function plugin_glpi2mdt_check_prerequisites() {
-   // GLPI 9.1.1 is the strict minimum in any case
-   if (version_compare(GLPI_VERSION, '9.5', 'lt')) {
-      if (method_exists('Plugin', 'messageIncompatible')) {
-         echo Plugin::messageIncompatible('core', '9.5');
-      } else {
-         echo "This plugin requires GLPI >= 9.5";
-      }
-      return false;
-   }
+	// GLPI 9.1.1 is the strict minimum in any case
+	if (version_compare(GLPI_VERSION, '11.0', 'lt')) {
+		if (method_exists('Plugin', 'messageIncompatible')) {
+			echo Plugin::messageIncompatible('core', '11.0');
+		} else {
+			echo "This plugin requires GLPI >= 11.0";
+		}
+		return false;
+	}
 
-   // The plugin needs to access the MSSQL MDT database, PHP modules needed
-   if (!extension_loaded("sqlsrv")) {
-      echo __('Incompatible PHP Installation. Requires PHP module SQLSRV', 'glpi2mdt');
-      return false;
-   }
-   // The plugin needs to process some XML files from the MDT deployment share, PHP module needed
-   if (!extension_loaded("simpleXML")) {
-      echo __('Incompatible PHP Installation. Requires module', 'glpi2mdt'). " simpleXML";
-      return false;
-   }
-   return true;
+	// The plugin needs to access the MSSQL MDT database, PHP modules needed
+	if (!extension_loaded("sqlsrv")) {
+		echo __('Incompatible PHP Installation. Requires PHP module SQLSRV', 'glpi2mdt');
+		return false;
+	}
+	// The plugin needs to process some XML files from the MDT deployment share, PHP module needed
+	if (!extension_loaded("simpleXML")) {
+		echo __('Incompatible PHP Installation. Requires module', 'glpi2mdt'). " simpleXML";
+		return false;
+	}
+	return true;
 }
 
 /**
- * Check configuration process
- *
- * @param boolean $verbose Whether to display message on failure. Defaults to false
- *
- * @return boolean
- */
+	* Check configuration process
+	*
+	* @param boolean $verbose Whether to display message on failure. Defaults to false
+	*
+	* @return boolean
+*/
 function plugin_glpi2mdt_check_config($verbose = false) {
-   if (true) { // Your configuration check
-      return true;
-   }
+	if (true) { // Your configuration check
+		return true;
+	}
 
-   if ($verbose) {
-      _e('Installed / not configured', 'glpi2mdt');
-   }
-   return false;
+	if ($verbose) {
+		_e('Installed / not configured', 'glpi2mdt');
+	}
+	return false;
 }

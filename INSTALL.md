@@ -27,6 +27,4 @@ That's all for now!
 
 The computer is now created or updated in MDT with those settings. Pressing F12 for PXE boot should fire the install.
 
-
 Hope it works for you too!
-

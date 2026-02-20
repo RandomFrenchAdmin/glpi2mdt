@@ -1,5 +1,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [0.5.0] - 2026-02-24
+## Added
+- Compatibility with GLPI 11
+
+## Changed
+- Enabling self-signed certificates for MS SQL connections (compatibility with Microsoft ODBC Driver 18)
+- Complete french translation
+
+## Removed
+- Disable OS choice setting in confirm form
+
+
+## [0.4.3] - 2026-02-24
+## Added
+- None
+
+## Changed
+- Enabling self-signed certificates for MS SQL connections (compatibility with Microsoft ODBC Driver 18)
+- Complete french translation
+
+## Removed
+- Disable OS choice setting in confirm form
+
+
 ## [0.4.2] - 2023-12-13
 ## Added
 - Function to add custom os value to the MDT database (replace SQL files manual executions)
@@ -36,7 +60,7 @@ All notable changes to this project will be documented in this file.
 
 ## Removed
 - None
-  
+
 
 ## [0.3.0] - 2022-02-13
 ## Added
@@ -60,17 +84,7 @@ All notable changes to this project will be documented in this file.
 
 ## Removed
  - None
-
-## [0.2.1] - 2017-12-20
-### Added
- - Russian language now available thanks to Nikolaï (AircraftRu)
-
-## Changed
- - None
-
-## Removed
- - None
-
+ 
 
 ## [0.2.0] - 2017-10-22
 ### Added
