@@ -4,7 +4,7 @@
  glpi2mdt plugin for GLPI
  Copyright (C) 2017 by Blaise Thauvin
 
- https://github.com/DebugBill/glpi2mdt
+ https://github.com/RandomFrenchAdmin/glpi2mdt
  -------------------------------------------------------------------------
 
  LICENSE
@@ -28,10 +28,9 @@
 
 // ----------------------------------------------------------------------
 // Original Author of file: Blaise Thauvin
+// Contributors : Enzo Lefrancois
 // Purpose of file: Form to manipulate additional computer data
 // ----------------------------------------------------------------------
-
-include ("../../../inc/includes.php");
 
 Html::header(_('Features'), $_SERVER["PHP_SELF"]);
 
@@ -41,13 +40,12 @@ $g2mComputer = new PluginGlpi2mdtComputer();
 
 // Save computer settings if necessary
 if ((isset($_POST['SAVE'])) and (isset($_POST['id']))) {
-   $data = $_POST;
-   $g2mComputer->updateValue($_POST);
-   $g2mComputer->updateMDT($_POST['id']);
+	$data = $_POST;
+	$g2mComputer->updateValue($_POST);
+	$g2mComputer->updateMDT($_POST['id']);
 
-   // Only reload page if Save button was pressed
+	// Only reload page if Save button was pressed
 }
 
 // Reload page
 Html::back();
-

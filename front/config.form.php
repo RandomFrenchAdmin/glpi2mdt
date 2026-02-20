@@ -4,7 +4,7 @@
  glpi2mdt plugin for GLPI
  Copyright (C) 2017 by Blaise Thauvin
 
- https://github.com/DebugBill/glpi2mdt
+ https://github.com/RandomFrenchAdmin/glpi2mdt
  -------------------------------------------------------------------------
 
  LICENSE
@@ -28,13 +28,11 @@
 
 // ----------------------------------------------------------------------
 // Original Author of file: Blaise Thauvin
+// Contributors : Enzo Lefrancois
 // Purpose of file: Form to manipulation global configuration parameters
 // ----------------------------------------------------------------------
 
-include ("../../../inc/includes.php");
-
-Html::header(__('Setup', 'glpi2mdt'), $_SERVER["PHP_SELF"],
-             "plugins", "glpi2mdt", "config");
+Html::header(__('Setup', 'glpi2mdt'), $_SERVER["PHP_SELF"], "plugins", "glpi2mdt", "config");
 
 //Session::checkRight('plugin_glpi2mdt_configuration', READ);
 Session::checkRight("config", UPDATE);
@@ -44,27 +42,26 @@ $g2mConfig->showPage();
 
 // Save configuration data
 if (isset($_POST['SAVE'])) {
-   $data = $_POST;
-   foreach ($data as $key=>$value) {
-      $g2mConfig->updateValue($key, $value);
-   }
-   // Only reload page if Save button was pressed
-   Html::back();
+	$data = $_POST;
+	foreach ($data as $key=>$value) {
+		$g2mConfig->updateValue($key, $value);
+	}
+	// Only reload page if Save button was pressed
+	Html::back();
 }
 
 // Test connection
 if (isset($_POST['TEST'])) {
-   $g2mConfig->showTestConnection();
+	$g2mConfig->showTestConnection();
 }
 
 // Initialise data (will NOT save first but use curently stored credentials)
 if (isset($_POST['INIT'])) {
-   PluginGlpi2mdtCrontask::cronUpdateBaseconfigFromMDT(0, false);
+	PluginGlpi2mdtCrontask::cronUpdateBaseconfigFromMDT(0, false);
 }
 
 // Check for new version of the plugin
 if (isset($_POST['UPDATE'])) {
-   PluginGlpi2mdtCrontask::cronCheckGlpi2mdtUpdate(0, false, true);
+	PluginGlpi2mdtCrontask::cronCheckGlpi2mdtUpdate(0, false, true);
 }
 Html::footer();
-
