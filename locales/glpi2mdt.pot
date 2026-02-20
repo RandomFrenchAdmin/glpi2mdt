@@ -207,6 +207,10 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+#: inc/computer.class.php:724
+msgid "Save"
+msgstr ""
+
 #: inc/config.class.php:140 inc/mdt.class.php:166 inc/mdt.class.php:167 
 #: inc/config.class.php:127
 msgid "Schema"
@@ -290,4 +294,10 @@ msgid "Custom variable has been loaded into table"
 msgstr ""
 
 msgid "Custom variable is already loaded into table"
+msgstr ""
+
+msgid "Enabling SSL using a self-signed certificate"
+msgstr ""
+
+msgid "Save"
 msgstr ""
