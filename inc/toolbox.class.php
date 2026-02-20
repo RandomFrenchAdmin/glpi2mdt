@@ -4,7 +4,7 @@
  glpi2mdt plugin for GLPI
  Copyright (C) 2017 by Blaise Thauvin
 
- https://github.com/DebugBill/glpi2mdt
+ https://github.com/RandomFrenchAdmin/glpi2mdt
  -------------------------------------------------------------------------
 
  LICENSE
@@ -33,7 +33,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
+	die("Sorry. You can't access this file directly");
 }
 
 
@@ -42,40 +42,39 @@ if (!defined('GLPI_ROOT')) {
 **/
 class PluginGlpi2mdtToolbox extends PluginGlpi2mdtMdt {
 
-   /**
-   * Widget to show a lisst of checkboxes splitted by groups
-   *
-   * @param $items: a three columns array with ID and descriptions to populate the checkboxes. One line per box
-   * @param $values : default values for boxes. Expects true/false
-   * @param $title : title to be used for the table header
-   * @param $prefix : prefix to be added to all ids to build POST variables
-   * @return none, but outputs HTML
-   */
-   static function showMultiSelect($items, $values, $title, $prefix) {
+	/**
+		* Widget to show a lisst of checkboxes splitted by groups
+		*
+		* @param $items: a three columns array with ID and descriptions to populate the checkboxes. One line per box
+		* @param $values : default values for boxes. Expects true/false
+		* @param $title : title to be used for the table header
+		* @param $prefix : prefix to be added to all ids to build POST variables
+		* @return none, but outputs HTML
+		*/
+	static function showMultiSelect($items, $values, $title, $prefix) {
 
-      echo '<table class="tab_cadre_fixe" width="100%">';
-      $group = '';
-      echo '<tr class="headerRow"><th colspan="2">'.$title.'<br></th></tr>';
-      foreach ($items as $guid=>$value) {
-         // Are we starting a new group?
-         if ($group <> $value['group']) {
-            echo '<tr class="tab_bg_1"><td colspan="2">'.$value['group'].'</td></tr>';
-         }
-         echo '<tr class="tab_bg_1"><td colspan="1">';
-         echo '<span class="form-group-checkbox"><input id="'.$prefix.$guid.'" name="'.$prefix.$guid.'"type="checkbox" ';
-         if (isset($values[$guid])) {
-            echo 'checked ';
-         }
-         if ($value['enable'] == false) {
-            echo 'disabled>'; } else {
-            echo '>';
-            }
-            echo "</span>";
-            $group = $value['group'];
-            echo '</td><td>'.$value['name'].'</td></tr>';
-      }
-      echo '</table>';
-   }
-
+		echo '<table class="tab_cadre_fixe" width="100%">';
+		$group = '';
+		echo '<tr class="headerRow"><th colspan="2">'.$title.'<br></th></tr>';
+		foreach ($items as $guid=>$value) {
+			// Are we starting a new group?
+			if ($group <> $value['group']) {
+				echo '<tr class="tab_bg_1"><td colspan="2">'.$value['group'].'</td></tr>';
+			}
+			echo '<tr class="tab_bg_1"><td colspan="1">';
+			echo '<span class="form-group-checkbox"><input id="'.$prefix.$guid.'" name="'.$prefix.$guid.'"type="checkbox" ';
+			if (isset($values[$guid])) {
+				echo 'checked ';
+			}
+			if ($value['enable'] == false) {
+				echo 'disabled>'; 
+			} else {
+				echo '>';
+			}
+			echo "</span>";
+			$group = $value['group'];
+			echo '</td><td>'.$value['name'].'</td></tr>';
+		}
+		echo '</table>';
+	}
 }
-
