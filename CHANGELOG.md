@@ -1,6 +1,6 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-## [0.5.0] - 2026-02-24
+## [0.5.0] - 2026-02-20
 ## Added
 - Compatibility with GLPI 11
 
@@ -9,10 +9,10 @@ All notable changes to this project will be documented in this file.
 - Complete french translation
 
 ## Removed
-- Disable OS choice setting in confirm form
+- Disable OS choice setting in config form
 
 
-## [0.4.3] - 2026-02-24
+## [0.4.3] - 2026-02-20
 ## Added
 - None
 
@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file.
 - Complete french translation
 
 ## Removed
-- Disable OS choice setting in confirm form
+- Disable OS choice setting in config form
 
 
 ## [0.4.2] - 2023-12-13
@@ -159,3 +159,4 @@ All notable changes to this project will be documented in this file.
  - None
 ### Fixed
  -None
+
