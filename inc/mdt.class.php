@@ -59,6 +59,16 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 	protected $globalconfig;
 	protected $DBLink;
 
+	/**
+		* Load icon for computer tab;
+		*
+		* @param None
+		*
+		* @return icon from tabler icons library
+	**/
+	public static function getIcon() {
+		return "ti ti-brand-windows";
+	}
 
 	/**
 		* Load plugin settings, connect to MSSQL;
