@@ -1,5 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [0.5.1] - 2026-02-23
+## Added
+- Icon for computer tab (from tabler icons library)
+
+## Changed
+- None
+
+## Removed
+- None
+
+
 ## [0.5.0] - 2026-02-20
 ## Added
 - Compatibility with GLPI 11
@@ -9,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - Complete french translation
 
 ## Removed
-- Disable OS choice setting in config form
+- Disable OS choice setting in confirm form
 
 
 ## [0.4.3] - 2026-02-20
@@ -21,7 +32,7 @@ All notable changes to this project will be documented in this file.
 - Complete french translation
 
 ## Removed
-- Disable OS choice setting in config form
+- Disable OS choice setting in confirm form
 
 
 ## [0.4.2] - 2023-12-13
@@ -159,4 +170,3 @@ All notable changes to this project will be documented in this file.
  - None
 ### Fixed
  -None
-

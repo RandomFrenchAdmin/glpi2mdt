@@ -26,7 +26,7 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_GLPI2MDT_VERSION', '0.5.0');
+define('PLUGIN_GLPI2MDT_VERSION', '0.5.1');
 
 // Minimal GLPI version, inclusive
 define('PLUGIN_GLPI2MDT_GLPI_MIN_VERSION', '11.0');
