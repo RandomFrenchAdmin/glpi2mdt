@@ -1,16 +1,28 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-## [0.5.2] - 2026-08-02
+## [0.6.0] - 2026-08-02
 ## Added
-- None
+- Security fixes (XSS attacks, SQL Injection)
+- Reduced externel requests
+- Prevents cron job hangs
+- Avoids "Undefined array key" errors
+- Easier troubleshooting
+- Avoids "Undefined index" errors
+- Guaranteed compatibility
 
 ## Changed
-- Database connection check before DBLink use
-- No more "PHP Warning: Undefined array key" error message if the plugin is not configured.
+- Prevents plugin deactivation
+- Proper error handling
+- Accepts valid DNS, logins and schemas with new patterns
+- Better compatibility with GLPI 11+
 
 ## Removed
-- None
-- 
+- No more conflicts with Symfony/GLPI
+- Removed duplicate code
+- Removed die() calls in cron tasks
+- Removed useless comments and obsolete code
+
+
 ## [0.5.1] - 2026-02-23
 ## Added
 - Icon for computer tab (from tabler icons library)
