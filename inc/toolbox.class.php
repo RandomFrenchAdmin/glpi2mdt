@@ -33,9 +33,8 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access this file directly");
+	die(__("Sorry. You can't access directly to this file", 'glpi2mdt'));
 }
-
 
 /**
  * Glpi2mdtToolbox class

@@ -33,9 +33,8 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access this file directly");
+	die(__("Sorry. You can't access directly to this file", 'glpi2mdt'));
 }
-
 
 /**
 	* Glpi2mdtcrontask class
@@ -61,8 +60,29 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 
 		//parse github releases (get last version number)
 		$error = "";
-		$json_gh_releases = Toolbox::getURLContent("https://api.github.com/repos/randomfrenchadmin/glpi2mdt/releases", $error);
+		//cache file to avoid repeated calls
+		$cache_file = GLPI_PLUGIN_DOC_DIR . '/glpi2mdt/gh_releases.json';
+		if (file_exists($cache_file) && (time() - filemtime($cache_file) < 86400)) {
+			$json_gh_releases = file_get_contents($cache_file);
+			$cache_valid = true;
+		} else {
+			$cache_valid = false;
+		}
+		$context = stream_context_create(['http' => ['timeout' => 10]]);
+		$json_gh_releases = Toolbox::getURLContent("https://api.github.com/repos/randomfrenchadmin/glpi2mdt/releases", $error, $context);
+		if ($json_gh_releases !== false) {
+			if (!is_dir(dirname($cache_file))) {
+				mkdir(dirname($cache_file), 0755, true);
+			}
+			file_put_contents($cache_file, $json_gh_releases);
+		}
 		$all_gh_releases = json_decode($json_gh_releases, true);
+		if (json_last_error() !== JSON_ERROR_NONE) {
+			if ($cron) {
+				$task->log("Failed to parse GitHub releases JSON: " . json_last_error_msg());
+			}
+			return 0;
+		}
 		$released_tags = array();
 		foreach ($all_gh_releases as $release) {
 			if ($release['prerelease'] == false) {
@@ -74,14 +94,15 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 		// Did we get something? Maybe not if the server has no internet access...
 		if (strlen(trim($latest_version)) == 0) {
 			if ($cron) {
-				$task->log($error);
+				$task->log($error ?: "Failed to fetch GitHub releases");
 			} else {
-				if ($messageafterredirect) {
-					Session::addMessageAfterRedirect($error, true, INFO);
-				} else {
-					return $error;
+				if ($messageafterredirect) { 
+					Session::addMessageAfterRedirect($error ?: "Failed to fetch GitHub releases", true, ERROR);
+				} else { 
+					return $error ?: "Failed to fetch GitHub releases"; 
 				}
 			}
+			return 0; 
 		} else {
 			$data = [
 				'parameter'  => 'LatestVersion',
@@ -145,13 +166,24 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 		}
 
 		// Add custom OS value into the "descriptions" table if it doesn't exist
-		$CheckOSValue = $MDT->query("SELECT count(*) as nb FROM dbo.Descriptions WHERE ColumnName='OSValue'");
+		try {
+			$CheckOSValue = $MDT->query("SELECT count(*) as nb FROM dbo.Descriptions WHERE ColumnName='OSValue'");
+		} catch (Exception $e) {
+			if ($cron) {
+				$task->log("Error checking OSValue in Descriptions: " . $e->getMessage());
+			}
+			$ok = -1;
+		}
 		$row = $MDT->fetch_assoc($CheckOSValue);
 		$CheckOSValue = $row['nb'];
 		if ($CheckOSValue == 0) {
 			$AddValueDescriptions = $MDT->query("INSERT INTO dbo.Descriptions (ColumnName, CategoryOrder, Category, Description) VALUES ('OSValue', '8', 'Miscellaneous', 'Operating system GUID')");
-			if ($AddValueDescriptions !== FALSE){echo "<tr class='tab_bg_1'><td>".__("Custom variable has been loaded into table", 'glpi2mdt')." 'dbo.Descriptions'.</td></tr>";}
-		} else {echo "<tr class='tab_bg_1'><td>".__("Custom variable is already loaded into table", 'glpi2mdt')." 'dbo.Descriptions'.</td></tr>";}
+			if ($AddValueDescriptions !== FALSE){if (!$cron) {echo "<tr class='tab_bg_1'><td>".__("Custom variable has been loaded into table", 'glpi2mdt')." 'dbo.Descriptions'.</td></tr>";}}
+		} else {
+			if (!$cron) {
+				echo "<tr class='tab_bg_1'><td>".__("Custom variable is already loaded into table", 'glpi2mdt')." 'dbo.Descriptions'.</td></tr>";
+			}
+		}
 		// Add custom OS value into the "settings" table if it doesn't exist
 		$CheckOSValue = $MDT->query("SELECT count(*) as nb FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'Settings' AND COLUMN_NAME = 'OSValue'");
 		$row = $MDT->fetch_assoc($CheckOSValue);
@@ -159,7 +191,9 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 		if ($CheckOSValue == 0) {
 			$AddValueSettings = $MDT->query('ALTER TABLE dbo.Settings ADD "OSValue" VARCHAR(38) NULL');
 			if ($AddValueSettings !== FALSE){
-				echo "<tr class='tab_bg_1'><td>".__("Custom variable has been loaded into table", 'glpi2mdt')." 'dbo.Settings'.</td>";
+				if (!$cron) {
+					echo "<tr class='tab_bg_1'><td>".__("Custom variable has been loaded into table", 'glpi2mdt')." 'dbo.Settings'.</td>";
+				}
 				$RefreshViewQuery = "
 					EXECUTE sp_refreshview '[dbo].[ComputerSettings]'
 					EXECUTE sp_refreshview '[dbo].[LocationSettings]'
@@ -169,7 +203,11 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 				$RefreshView = $MDT->query($RefreshViewQuery);
 				if($RefreshView){echo "<td>SQL view has been refreshed</td></tr>";} else {echo "<td>ERROR : unable to refresh SQL view</td></tr>";}
 			}
-		} else {echo "<tr class='tab_bg_1'><td>".__("Custom variable is already loaded into table", 'glpi2mdt')." 'dbo.Settings'.</td>";}
+		} else {
+			if (!$cron) {
+				echo "<tr class='tab_bg_1'><td>".__("Custom variable is already loaded into table", 'glpi2mdt')." 'dbo.Settings'.</td></tr>";
+			}
+		}
 
 		//
 		// Load available settings fields and descriptions from MDT
@@ -246,7 +284,12 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 		//
 		// Load available roles from MDT
 		//
-		$result = $MDT->query('SELECT  ID, Role FROM dbo.RoleIdentity');
+		try {
+			$result = $MDT->query('SELECT ID, Role FROM dbo.RoleIdentity');
+		} catch (Exception $e) {
+			if ($cron) { $task->log("Error loading roles from MDT: " . $e->getMessage()); }
+			$ok = -1;
+		}
 
 		// Mark lines in order to detect deleted ones in the source database
 		$DB->update(
@@ -821,8 +864,14 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 		}
 		try {
 			//GET computer(s) and settings
-			$query = "SELECT * FROM dbo.ComputerIdentity c, dbo.Settings s WHERE c.id=s.id $mdtids";
-			$result = $MDT->queryOrDie($query, "Cannot retrieve computers from MDT");
+			try {
+				$query = "SELECT * FROM dbo.ComputerIdentity c, dbo.Settings s WHERE c.id=s.id $mdtids";
+				$result = $MDT->queryOrDie($query, "Cannot retrieve computers from MDT");
+			} catch (Exception $e) {
+				$task->log("Fatal error during synchronisation: " . $e->getMessage());
+				return 0;
+			}
+
 			if (isset($task)) {
 				$task->log("Start data synchronisation in $mode mode");
 				$task->setVolume($MDT->numrows($result));
@@ -900,15 +949,19 @@ class PluginGlpi2mdtCronTask extends PluginGlpi2mdtMdt {
 							}
 						}
 						// Supprimer les paramètres non synchronisés
-						$DB->delete(
-							'glpi_plugin_glpi2mdt_settings',
-							[
-								'type' => 'C',
-								'category' => 'C',
-								'is_in_sync' => false,
-								'id' => $id,
-							]
-						);
+						try {
+							$DB->delete(
+								'glpi_plugin_glpi2mdt_settings',
+								[
+									'type' => 'C',
+									'category' => 'C',
+									'is_in_sync' => false,
+									'id' => $id,
+								]
+							);
+						} catch (Exception $e) {
+							$task->log("Can't delete unsynchronized settings for computer ID '$id': " . $e->getMessage());
+						}
 						// Keep the highest number of fields updated for one single comuputer in GLPI
 						$correspondances[$id] = max($correspondances[$id], $fields);
 					} else if ($mode == "Strict") {

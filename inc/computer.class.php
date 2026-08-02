@@ -33,9 +33,8 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access directly to this file");
+	die(__("Sorry. You can't access directly to this file", 'glpi2mdt'));
 }
-
 
 class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 
@@ -63,7 +62,11 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 			]
 		])->current();
 		if ($mode && $mode['mode'] == 'Master') {
-			PluginGlpi2mdtCrontask::cronSyncMasterAndStrict(null, $item->getID());
+			try {
+				PluginGlpi2mdtCrontask::cronSyncMasterAndStrict(null, $item->getID());
+			} catch (Exception $e) {
+				Session::addMessageAfterRedirect(__('Error while synchronizing computer data with MDT. Please check the logs.', 'glpi2mdt'), false, ERROR);
+			}
 		}
 		$id = $item->getID();
 		$isAutoInstallEnabled = $DB->request([
@@ -328,20 +331,32 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 		// Check if the computer entries in MDT are the ones expected by GLPI.
 		// If not, delete everything and recreate
 		// If yes, depending on coupling mode, delete and recreate or simply update
-		$query = ("SELECT ID FROM dbo.ComputerIdentity WHERE UUID='$uuid' AND Description='$name' AND SerialNumber='$serial' AND AssetTag='$otherserial' AND $macs");
+		$uuid = str_replace("'", "''", $uuid);
+		$name = str_replace("'", "''", $name);
+		$serial = str_replace("'", "''", $serial);
+		$otherserial = str_replace("'", "''", $otherserial);
+		$query = "SELECT ID FROM dbo.ComputerIdentity WHERE UUID='$uuid' AND Description='$name' AND SerialNumber='$serial' AND AssetTag='$otherserial' AND $macs";
 		$result = $this->query($query);
 		$nbrowsactual = $this->numrows($result);
-		if ($nbrows <> $nbrowsactual) {
-			$this->queryOrDie("DELETE FROM dbo.ComputerIdentity WHERE $mdtids");
-			$this->queryOrDie("INSERT INTO dbo.ComputerIdentity (Description, UUID, SerialNumber, AssetTag, MacAddress) VALUES $values");
+		if ($nbrows != $nbrowsactual) {
+			try {
+				$this->queryOrDie("DELETE FROM dbo.ComputerIdentity WHERE $mdtids");
+				$this->queryOrDie("INSERT INTO dbo.ComputerIdentity (Description, UUID, SerialNumber, AssetTag, MacAddress) VALUES $values");
+			} catch (Exception $e) {
+				session::addMessageAfterRedirect(__('Error syncing ComputerIdentity. Please check the logs.', 'glpi2mdt'), false, ERROR);
+			}
 		}
 		// Delete corresponding records in side tables depending on coupling mode
-		if (($nbrows <> $nbrowsactual) OR ($globalconfig['Mode'] == 'Strict')) {
-			$this->queryOrDie("DELETE FROM dbo.Settings WHERE Type='C' and $mdtids");
-			$this->queryOrDie("DELETE FROM dbo.Settings_Applications WHERE Type='C' and $mdtids");
-			$this->queryOrDie("DELETE FROM dbo.Settings_Administrators WHERE Type='C' and $mdtids");
-			$this->queryOrDie("DELETE FROM dbo.Settings_Packages WHERE Type='C' and $mdtids");
-			$this->queryOrDie("DELETE FROM dbo.Settings_Roles WHERE Type='C' and $mdtids");
+		if (($nbrows != $nbrowsactual) OR ($globalconfig['Mode'] == 'Strict')) {
+			try {
+				$this->queryOrDie("DELETE FROM dbo.Settings WHERE Type='C' and $mdtids");
+				$this->queryOrDie("DELETE FROM dbo.Settings_Applications WHERE Type='C' and $mdtids");
+				$this->queryOrDie("DELETE FROM dbo.Settings_Administrators WHERE Type='C' and $mdtids");
+				$this->queryOrDie("DELETE FROM dbo.Settings_Packages WHERE Type='C' and $mdtids");
+				$this->queryOrDie("DELETE FROM dbo.Settings_Roles WHERE Type='C' and $mdtids");
+			} catch (Exception $e) {
+				session::addMessageAfterRedirect(__('Error deleting from MDT side tables. Please check the logs.', 'glpi2mdt'), false, ERROR);
+			}
 		}
 		// Retreive (newly created or not) entries ids in order to add the settings.
 		$mdt = $this->getMdtIds($id);
@@ -353,21 +368,23 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 		$serial = $mdt['serial'];
 		$otherserial = $mdt['otherserial']; //asset tag
 		$nbrows = $mdt['nbrows'];
-
 		foreach ($arraymdtids as $mdtid) {
-			$values = "('C', $mdtid, '$name', '$name', '$name', '$adminpasscomposite') ";
-			// Check if settings line does exist already. Insert if not, update if yes
-			// (because "on duplicate" does not exist in MS-SQL)
-			$exists = $this->queryOrDie("SELECT ID FROM dbo.Settings WHERE Type='C' AND ID=$mdtid;");
-			if ($this->numrows($exists) == 1) {
-				$query = "UPDATE dbo.Settings SET ComputerName='$name', OSDComputerName='$name', FullName='$name', AdminPassword='$adminpasscomposite' WHERE Type='C' and ID=$mdtid";
-			} else {
-				$query = "INSERT INTO dbo.Settings (Type, ID, ComputerName, OSDComputerName, FullName, AdminPassword) VALUES $values;";
+			$values = "('C', $mdtid, '" . str_replace("'", "''", $name) . "', '" . str_replace("'", "''", $name) . "', '" . str_replace("'", "''", $name) . "', '" . str_replace("'", "''", $adminpasscomposite) . "') ";
+			try {
+				$exists = $this->queryOrDie("SELECT ID FROM dbo.Settings WHERE Type='C' AND ID=$mdtid;");
+				if ($this->numrows($exists) == 1) {
+					$query = "UPDATE dbo.Settings SET ComputerName='" . str_replace("'", "''", $name) . "', OSDComputerName='" . str_replace("'", "''", $name) . "', FullName='" . str_replace("'", "''", $name) . "', AdminPassword='" . str_replace("'", "''", $adminpasscomposite) . "' WHERE Type='C' and ID=$mdtid";
+				} else {
+					$query = "INSERT INTO dbo.Settings (Type, ID, ComputerName, OSDComputerName, FullName, AdminPassword) VALUES $values;";
+				}
+				$this->queryOrDie($query);
+			} catch (Exception $e) {
+				session::addMessageAfterRedirect(__('Error updating settings for computer in MDT. Please check the logs.', 'glpi2mdt'), false, ERROR);
 			}
-			$this->queryOrDie($query);
 		}
 
 		// Update settings with additional variables
+		
 		$iterator = $DB->request([
 			'SELECT' => ['key', 'value'],
 			'FROM'   => 'glpi_plugin_glpi2mdt_settings',
@@ -377,15 +394,18 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 				'type'     => 'C'
 			]
 		]);
-
 		foreach ($iterator as $pair) {
 			$key = $pair['key'];
 			$value = ($pair['value'] == '*undef*') ? '' : $pair['value'];
-
-			$query = "UPDATE dbo.Settings SET $key='$value' WHERE $mdtids;";
-			// Check if key is a valid field for database "settings" in order to filter OSInstallExpire for example
-			if (isset($variables[$key])) {
-				$this->queryOrDie("$query");
+			$value = str_replace("'", "''", $value);
+			try {
+				// Check if key is a valid field for database "settings" in order to filter OSInstallExpire for example
+				if (isset($variables[$key])) {
+					$query = "UPDATE dbo.Settings SET $key='$value' WHERE $mdtids;";
+					$this->queryOrDie($query);
+				}
+			} catch (Exception $e) {
+				session::addMessageAfterRedirect(__('Error updating settings for computer in MDT. Please check the logs.', 'glpi2mdt'), false, ERROR);
 			}
 		}
 		
@@ -405,8 +425,12 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 			$value = $pair['value'];
 			reset($arraymdtids);
 			foreach ($arraymdtids as $mdtid) {
-				// GLPI2MDT does not manage ranks, so keep the existing one if any
-				$ranks = $this->queryOrDie("SELECT Sequence FROM dbo.Settings_Applications WHERE ID=$mdtid AND type='C' AND Applications='$key';");
+				try {
+					// GLPI2MDT does not manage ranks, so keep the existing one if any
+					$ranks = $this->queryOrDie("SELECT Sequence FROM dbo.Settings_Applications WHERE ID=$mdtid AND type='C' AND Applications='$key';");
+				} catch (Exception $e) {
+					session::addMessageAfterRedirect(__('Error checking application rank in MDT. Please check the logs.', 'glpi2mdt'), false, ERROR);
+				}
 				if ($this->numrows($ranks) == 0) {
 					$this->queryOrDie("INSERT INTO dbo.Settings_Applications (Type, ID, Sequence, Applications) VALUES ('C', '$mdtid', $value, '$key');");
 				}
@@ -427,6 +451,7 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 			foreach ($iterator as $pair) {
 				$key = $pair['key'];
 				$value = $pair['value'];
+				$value = str_replace("'", "''", $value);
 				reset($arraymdtids);
 				foreach ($arraymdtids as $mdtid) {
 					// GLPI2MDT does not manage ranks, so keep the existing one if any
@@ -439,34 +464,8 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 					}
 				}
 			}
-		} catch (PDOException $e) {
-			$task->log("Erreur lors de la sélection des rôles : " . $e->getMessage());
-		}
-
-		$iterator = $DB->request([
-			'SELECT' => ['key', 'value'],
-			'FROM'   => 'glpi_plugin_glpi2mdt_settings',
-			'WHERE'  => [
-				'id'       => $id,
-				'category' => 'R',
-				'type'     => 'C'
-			]
-		]);
-
-		foreach ($iterator as $pair) {
-			$key = $pair['key'];
-			$value = $pair['value'];
-			reset($arraymdtids);
-			foreach ($arraymdtids as $mdtid) {
-				// GLPI2MDT does not manage ranks, so keep the existing one if any
-				$rank = $this->queryOrDie("SELECT Sequence FROM dbo.Settings_Roles WHERE ID=$mdtid AND type='C' AND Role='$value';");
-				if ($this->numrows($ranks) == 0) {
-					// Add after existing roles in MDT, mainly for loose and master coupling modes
-					$next = $this->queryOrDie("SELECT ISNULL(MAX(Sequence),0)+1 as next FROM dbo.Settings_Roles WHERE ID=$mdtid AND type='C';");
-					$rank = $this->fetch_array($next)['next'];
-					$this->queryOrDie("INSERT INTO dbo.Settings_Roles (Type, ID, Sequence, Role) VALUES ('C', '$mdtid', '$rank', '$value');");
-				}
-			}
+		} catch (Exception $e) {
+			session::addMessageAfterRedirect(__('Error updating roles for computer in MDT. Please check the logs.', 'glpi2mdt'), false, ERROR);
 		}
 	}
 
@@ -692,7 +691,7 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 		if (PluginGlpi2mdtComputer::canUpdate()) {
 			echo '<tr class="tab_bg_1">';
 			echo '<td></td><td>';
-			echo '<input type="submit" class="submit" value="'.__('Save').'" name="SAVE"/>';
+			echo sprintf('<input type="submit" class="submit" value="%s" name="SAVE"/>', htmlspecialchars(__('Save'), ENT_QUOTES, 'UTF-8'));
 			echo '</td>';
 			echo '</tr>';
 			echo '</tr>';
@@ -711,8 +710,8 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 
 			if ($latestversion && version_compare($currentversion, $latestversion['value_char'], '<')) {
 				echo sprintf(
-					'<div class="alert alert-warning text-center">%s</div>',
-					sprintf(__('A new version of plugin glpi2mdt is available: v%s', 'glpi2mdt'), $latestversion['value_char'])
+					'<div class=\"alert alert-warning text-center\">%s</div>',
+					htmlspecialchars(sprintf(__('A new version of plugin glpi2mdt is available: v%s', 'glpi2mdt'), $latestversion['value_char']), ENT_QUOTES, 'UTF-8')
 				);
 			}
 

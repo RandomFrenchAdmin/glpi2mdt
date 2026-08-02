@@ -30,13 +30,10 @@
 // Original Author of file: Blaise Thauvin
 // Contributor : Enzo Lefrancois
 // Purpose of file: Base class to connect to MS-SQL MDT
-// PRevious versions until GLPI2MDT 0.2.1 used ODBC PHP extensions obsoleted with PHP 7
-// This class will use SQLSRV php extension available until php 7.3
-// Other classes in for the plugin will extend it
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access directly to this file");
+	die(__("Sorry. You can't access directly to this file", 'glpi2mdt'));
 }
 
 class PluginGlpi2mdtMdt extends CommonDBTM {
@@ -81,7 +78,6 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		parent::__construct();
 		global $DB;
 
-		// Dans le constructeur, après avoir chargé les paramètres
 		foreach ($this->validkeys as $key => $type) {
 			if (!isset($this->globalconfig[$key])) {
 				$this->globalconfig[$key] = ($type === 'num') ? 0 : '';
@@ -136,11 +132,8 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		}
 
 		// Connection to MSSQL using SQLSRV PHP module
-		//if (extension_loaded('sqlsrv')) {
-		//	$DBLink = sqlsrv_connect($DBServer,$DBOption);
-		//}
 		if (extension_loaded('sqlsrv')) {
-			$DBLink = sqlsrv_connect($DBServer, $DBOption);
+			$DBLink = sqlsrv_connect("$DBServer,$DBPort", $DBOption);
 			if ($DBLink === false) {
 				$this->DBLink = false;
 				Session::addMessageAfterRedirect(
@@ -163,26 +156,6 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		$this->DBLink = $DBLink;
 	}
 
-
-	/**
-		* Clean before destroying class
-		*
-		* @param None
-		*
-		* @return None
-	**/
-	function __destruct() {
-		// DBLink is false if no connection could be established
-		if ($this->DBLink === false) {
-			return;
-		}
-		sqlsrv_close($this->DBLink);
-
-		// Looks nice.... but fails because there is no destruct over there
-		//parent::__destruct();
-	}
-
-
 	/**
 		* Test MDT connection;
 		*
@@ -202,28 +175,19 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 			echo __("Database login OK!", 'glpi2mdt');
 			echo "</font><br>";
 			// Simple query to get database version
-			$version = $this->query('SELECT @@VERSION');
-			$row = $this->fetch_array($version);
-			echo "Server is: <br>".reset($row)."<br>";
-			$result = $this->query("SELECT COUNT(*) FROM $dbschema.information_schema.tables WHERE table_type='base table'");
-			$array_result = $this->fetch_array($result);
-			$nb = reset($array_result);
-			if ($nb > 0) {
-				echo "<font color='green'>";
-				echo __("Schema", 'glpi2mdt')." ".$dbschema." ".__("contains", 'glpi2mdt')." ".$nb." ".__("tables", 'glpi2mdt').".";
-				echo "</font><br>";
-			} else {
-				echo "<h1><font color='red'>";
-				echo __("Could not count tables in schema", 'glpi2mdt')." ".$this->DBSchema;
-				echo "</font></h1><br>";
+			try {
+				$version = $this->query('SELECT @@VERSION');
+				$row = $this->fetch_array($version);
+				echo "Server is: <br>".reset($row)."<br>";
+			} catch (Exception $e) {
+				echo "<font color='red'>" . __("Error executing query: ", 'glpi2mdt') . $e->getMessage() . "</font><br>";
 			}
 		} else {
 			echo "<h1><font color='red'>";
 			echo __("Database login KO!", 'glpi2mdt');
 			echo "</font></h1><br>";
 		}
-		echo '</td>';
-		echo '</tr></table>';
+		echo '</td></tr></table>';
 	}
 
 
@@ -242,11 +206,6 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 	function query($query ) {
 		return sqlsrv_query($this->DBLink, $query);
 	}
-
-	//function queryOrDie($query, $message = '' ) {
-	//	$result = sqlsrv_query($this->DBLink, $query) or die ($message."<br><br>".$query."<br><br>".sqlsrv_errors());
-	//	return $result;
-	//}
 
 	function queryOrDie($query, $message = '') {
 		$result = sqlsrv_query($this->DBLink, $query);
@@ -291,6 +250,7 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		*            values string, list ready to be used in a "INSERT VALUES" clause
 		*            ids    string, list of IDs ready to be included in a WHERE clause
 	**/
+	
 	function getMdtIds($id) {
 		global $DB;
 
@@ -304,31 +264,9 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 					'is_deleted' => false,
 				],
 			]);
-			if (count($iterator) === 0) {
-				$task->log("Aucun ordinateur trouvé avec l'ID $id ou déjà supprimé.");
-				return;
-			}
-			$common = $iterator->current();
-			$uuid = $common['uuid'];
-			$name = $common['name'];
-			$serial = $common['serial'];
-			$otherserial = $common['otherserial']; // Asset Tag
-		} catch (PDOException $e) {
-			$task->log("Database error: " . $e->getMessage());
-			return;
-		}
-		try {
-			$iterator = $DB->request([
-				'SELECT' => ['name', 'uuid', 'serial', 'otherserial'],
-				'FROM' => 'glpi_computers',
-				'WHERE' => [
-					'id' => $id,
-					'is_deleted' => false,
-				],
-			]);
 
 			if (count($iterator) === 0) {
-				$task->log("Aucun ordinateur trouvé avec l'ID $id ou déjà supprimé.");
+				$task->log("Aucun ordinateur trouv� avec l'ID $id ou d�j� supprim�.");
 				return;
 			}
 
@@ -387,8 +325,8 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 				$macs = "MacAddress=''";
 				$values = "('$name', '$uuid', '$serial', '$otherserial', '')";
 			}
-		} catch (PDOException $e) {
-			$task->log("Erreur de base de données : " . $e->getMessage());
+		} catch (Exception $e) {
+			$task->log("Erreur de base de donn�es : " . $e->getMessage());
 			return;
 		}
 
@@ -425,4 +363,6 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		$mdt['nbrows'] = $nbrows;
 		return $mdt;
 	}
+
+
 }
