@@ -1,5 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [0.5.2] - 2026-08-02
+## Added
+- None
+
+## Changed
+- Database connection check before DBLink use
+- No more "PHP Warning: Undefined array key" error message if the plugin is not configured.
+
+## Removed
+- None
+- 
 ## [0.5.1] - 2026-02-23
 ## Added
 - Icon for computer tab (from tabler icons library)
