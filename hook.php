@@ -316,8 +316,13 @@ function plugin_glpi2mdt_uninstall() {
 				"glpi_plugin_glpi2mdt_task_sequence_groups",
 				"glpi_plugin_glpi2mdt_task_sequences"];
 
+	//foreach ($tables as $table) {
+	//	$DB->dropTable($table, true);
+	//}
 	foreach ($tables as $table) {
-		$DB->dropTable($table, true);
+		if ($DB->tableExists($table)) {
+			$DB->dropTable($table, true);
+		}
 	}
 
 	// Remove cron tasks

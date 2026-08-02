@@ -26,12 +26,12 @@
  --------------------------------------------------------------------------
  */
 
-define('PLUGIN_GLPI2MDT_VERSION', '0.5.1');
+define('PLUGIN_GLPI2MDT_VERSION', '0.5.2');
 
 // Minimal GLPI version, inclusive
 define('PLUGIN_GLPI2MDT_GLPI_MIN_VERSION', '11.0');
 // Maximum GLPI version, exclusive
-define('PLUGIN_GLPI2MDT_GLPI_MAX_VERSION', '12.0');
+define('PLUGIN_GLPI2MDT_GLPI_MAX_VERSION', '11.99');
 
 /**
 	* Init hooks of the plugin.
@@ -95,9 +95,9 @@ function plugin_version_glpi2mdt() {
 */
 function plugin_glpi2mdt_check_prerequisites() {
 	// GLPI 9.1.1 is the strict minimum in any case
-	if (version_compare(GLPI_VERSION, '11.0', 'lt')) {
+	if (version_compare(GLPI_VERSION, PLUGIN_GLPI2MDT_GLPI_MIN_VERSION, 'lt')) {
 		if (method_exists('Plugin', 'messageIncompatible')) {
-			echo Plugin::messageIncompatible('core', '11.0');
+			echo Plugin::messageIncompatible('core', PLUGIN_GLPI2MDT_GLPI_MIN_VERSION);
 		} else {
 			echo "This plugin requires GLPI >= 11.0";
 		}
@@ -106,12 +106,12 @@ function plugin_glpi2mdt_check_prerequisites() {
 
 	// The plugin needs to access the MSSQL MDT database, PHP modules needed
 	if (!extension_loaded("sqlsrv")) {
-		echo __('Incompatible PHP Installation. Requires PHP module SQLSRV', 'glpi2mdt');
+		echo __('Incompatible PHP Installation. Requires PHP SQLSRV module', 'glpi2mdt');
 		return false;
 	}
 	// The plugin needs to process some XML files from the MDT deployment share, PHP module needed
 	if (!extension_loaded("simpleXML")) {
-		echo __('Incompatible PHP Installation. Requires module', 'glpi2mdt'). " simpleXML";
+		echo __('Incompatible PHP Installation. Requires PHP XML module', 'glpi2mdt');
 		return false;
 	}
 	return true;
