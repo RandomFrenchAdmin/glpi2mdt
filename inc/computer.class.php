@@ -710,8 +710,8 @@ class PluginGlpi2mdtComputer extends PluginGlpi2mdtMdt {
 
 			if ($latestversion && version_compare($currentversion, $latestversion['value_char'], '<')) {
 				echo sprintf(
-					'<div class=\"alert alert-warning text-center\">%s</div>',
-					htmlspecialchars(sprintf(__('A new version of plugin glpi2mdt is available: v%s', 'glpi2mdt'), $latestversion['value_char']), ENT_QUOTES, 'UTF-8')
+					'<br><br><div class="alert alert-warning text-center">%s</div>',
+					htmlspecialchars(sprintf(__("A new version is available: v%s", 'glpi2mdt'), $latestversion['value_char']), ENT_QUOTES, 'UTF-8')
 				);
 			}
 

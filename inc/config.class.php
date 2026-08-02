@@ -259,7 +259,7 @@ class PluginGlpi2mdtConfig extends PluginGlpi2mdtMdt {
 		if (!empty($latestversion) && version_compare($currentversion, $latestversion, '<')) {
 			echo '<div class="alert alert-warning text-center">';
 			echo sprintf(
-				htmlspecialchars(__('A new version of plugin glpi2mdt is available: v%s', 'glpi2mdt'), ENT_QUOTES, 'UTF-8'),
+				htmlspecialchars(__("A new version is available: v%s", 'glpi2mdt'), ENT_QUOTES, 'UTF-8'),
 				htmlspecialchars($latestversion, ENT_QUOTES, 'UTF-8')
 			);
 			echo '</div>';
