@@ -81,6 +81,13 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		parent::__construct();
 		global $DB;
 
+		// Dans le constructeur, après avoir chargé les paramètres
+		foreach ($this->validkeys as $key => $type) {
+			if (!isset($this->globalconfig[$key])) {
+				$this->globalconfig[$key] = ($type === 'num') ? 0 : '';
+			}
+		}
+
 		$iterator = $DB->request([
 			'SELECT' => ['parameter', 'value_char', 'value_num'],
 			'FROM'   => 'glpi_plugin_glpi2mdt_parameters',
@@ -129,9 +136,25 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		}
 
 		// Connection to MSSQL using SQLSRV PHP module
+		//if (extension_loaded('sqlsrv')) {
+		//	$DBLink = sqlsrv_connect($DBServer,$DBOption);
+		//}
 		if (extension_loaded('sqlsrv')) {
-			$DBLink = sqlsrv_connect($DBServer,$DBOption);
+			$DBLink = sqlsrv_connect($DBServer, $DBOption);
+			if ($DBLink === false) {
+				$this->DBLink = false;
+				Session::addMessageAfterRedirect(
+					__("Database login KO!", 'glpi2mdt'),
+					true,
+					ERROR
+				);
+				return;
+			}
+			$this->DBLink = $DBLink;
+		} else {
+			$this->DBLink = false;
 		}
+
 		// Check if connection is successful, die if not
 		if ($DBLink === false) {
 			$error = __("Can't connect to MSSQL database using PHP SQLSRV module. Check configuration", 'glpi2mdt');
@@ -220,8 +243,19 @@ class PluginGlpi2mdtMdt extends CommonDBTM {
 		return sqlsrv_query($this->DBLink, $query);
 	}
 
-	function queryOrDie($query, $message = '' ) {
-		$result = sqlsrv_query($this->DBLink, $query) or die ($message."<br><br>".$query."<br><br>".sqlsrv_errors());
+	//function queryOrDie($query, $message = '' ) {
+	//	$result = sqlsrv_query($this->DBLink, $query) or die ($message."<br><br>".$query."<br><br>".sqlsrv_errors());
+	//	return $result;
+	//}
+
+	function queryOrDie($query, $message = '') {
+		$result = sqlsrv_query($this->DBLink, $query);
+		if ($result === false) {
+			$error = sqlsrv_errors();
+			throw new RuntimeException(
+				$message . "\n\n" . $query . "\n\n" . print_r($error, true)
+			);
+    		}
 		return $result;
 	}
 
